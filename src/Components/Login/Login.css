@@ -1,0 +1,209 @@
+.login-wrapper {
+  background: linear-gradient(135deg, #0049B7 0%, #06C0B8 100%);
+  min-height: 100vh;          /* changed from height */
+  overflow-y: hidden;           /* allow vertical scrolling */
+  display: flex;
+  flex-direction: row;
+}
+/* Logo inside login card top-left */
+.login-card-logo {
+  display: flex;
+  align-items: center;
+}
+
+.hospital-logo-login {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  margin-bottom: 0;
+}
+
+/* Adjust margin for login page */
+.text-muted.mb-4 {
+  margin-bottom: 1.5rem !important;
+  margin-right: 80px;
+}
+
+/* Left side styling */
+.login-left {
+  flex: 1;
+  color: #fff;
+  background: 
+    linear-gradient(
+      135deg,
+      rgba(0, 73, 183, 0.92),
+      rgba(6, 192, 184, 0.85)
+    ),
+    url("https://img.freepik.com/free-photo/blur-hospital_1203-7963.jpg") no-repeat center center/cover;
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.hospital-brand {
+  display: flex;
+  align-items: center;
+}
+
+.hospital-logo {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.hospital-points {
+  list-style: none;
+  padding: 0;
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+.hospital-points li {
+  margin-bottom: 8px;
+}
+
+
+/* Right side styling */
+.login-right {
+  flex: 1;
+  background: #f9fcff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+}
+
+.login-title {
+  color: #0049B7;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.form-label {
+  text-align: left;
+}
+
+.form-control.is-invalid {
+  border-color: #dc3545;
+  padding-right: 2.5rem;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+  text-align: left;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #0049B7 0%, #06C0B8 100%);
+  border: none;
+  transition: transform 0.2s, box-shadow 0.3s;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(90deg, #06C0B8 0%, #0049B7 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 73, 183, 0.25);
+}
+
+.btn-secondary {
+  background: linear-gradient(90deg, #168882 100%);
+  border: none;
+  color: #fff;
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(90deg, #0049B7 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Register link style */
+.register-link a {
+  color: #06C0B8;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+
+
+/* Responsive Styles */
+
+/* Medium devices (tablets, 768px and up) */
+@media (max-width: 991.98px) {
+   .login-wrapper {
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-y: auto;
+    height: auto;  /* allow natural height */
+  }
+.login-right {
+  overflow-y: auto;
+}
+
+  .login-left,
+  .login-right {
+    flex: none;
+    width: 100%;
+    padding: 2rem;
+  }
+
+  .login-left {
+    padding-bottom: 1.5rem;
+  }
+
+}
+
+/* Small devices (landscape phones, less than 768px) */
+@media (max-width: 767.98px) {
+  .login-left {
+    display: none; /* Hide left side on small devices for simpler UX */
+  }
+
+  .login-right {
+    width: 100%;
+    padding: 1.5rem;
+    justify-content: flex-start;
+  }
+
+  .login-card {
+    max-width: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+    padding: 2rem;
+  }
+
+  .hospital-logo-login {
+    margin-left: 0; /* Adjust margin if needed */
+  }
+
+  /* Adjust margins for text-muted */
+  .text-muted.mb-4 {
+    margin-right: 0 !important;
+  }
+}
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media (max-width: 575.98px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+
+  .btn-primary, .btn-secondary {
+    font-size: 1rem;
+    padding: 0.6rem 0;
+  }
+}

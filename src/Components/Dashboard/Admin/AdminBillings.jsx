@@ -1,0 +1,267 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+
+const AdminBillings = () => {
+  const [billings, setBillings] = useState([]);
+  const [activePanel, setActivePanel] = useState(null); // 'add' | 'filter' | null
+  const [formData, setFormData] = useState({
+    appointmentID: "",
+    billingDate: "",
+    statusID: "",
+  });
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+
+  const token = sessionStorage.getItem("token");
+
+  useEffect(() => {
+    fetchBillings();
+  }, []);
+
+  const fetchBillings = () => {
+    setLoading(true);
+    axios.get("http://localhost:5093/api/Billing", {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => {
+        setBillings(res.data?.["$values"] || []);
+        setLoading(false);
+      })
+      .catch(() => {
+        setLoading(false);
+        setFeedback({ type: "error", message: "Failed to fetch billing records." });
+      });
+  };
+
+  const fetchByDateRange = () => {
+    if (!dateFrom || !dateTo) {
+      setFeedback({ type: "error", message: "Please select both From and To dates." });
+      return;
+    }
+    setLoading(true);
+    axios.get(`http://localhost:5093/api/Billing/date-range?from=${dateFrom}&to=${dateTo}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => {
+        setBillings(res.data?.["$values"] || []);
+        setLoading(false);
+        setFeedback({ type: "success", message: `Loaded billing records from ${dateFrom} to ${dateTo}.` });
+      })
+      .catch(() => {
+        setLoading(false);
+        setFeedback({ type: "error", message: "Failed to load billing records for date range." });
+      });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const submitForm = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // Convert billingDate to ISO datetime string at start of day UTC
+    const billingDateTime = formData.billingDate ? new Date(formData.billingDate).toISOString() : null;
+
+    const payload = {
+      ...formData,
+      billingDate: billingDateTime,
+    };
+
+    axios.post("http://localhost:5093/api/Billing", payload, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(() => {
+        fetchBillings();
+        setActivePanel(null);
+        setFormData({
+          appointmentID: "",
+          billingDate: "",
+          statusID: "",
+        });
+        setFeedback({ type: "success", message: "Billing record added successfully." });
+        setLoading(false);
+      })
+      .catch(() => {
+        setFeedback({ type: "error", message: "Failed to add billing record." });
+        setLoading(false);
+      });
+  };
+
+  const cancelAddOrFilter = () => {
+    setActivePanel(null);
+    setFormData({
+      appointmentID: "",
+      billingDate: "",
+      statusID: "",
+    });
+    setDateFrom("");
+    setDateTo("");
+    setFeedback(null);
+    fetchBillings(); // refresh full list on clear
+  };
+
+  return (
+    <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
+      <nav className="admin-sidebar d-flex flex-column p-3">
+        <h3 className="mb-4">AmazeCare Admin</h3>
+        <ul className="nav flex-column">
+<li className="nav-item mb-2"><Link to="/admin-dashboard" className="nav-link active">Dashboard</Link></li>
+          <li className="nav-item mb-2"><Link to="/admin/doctors" className="nav-link">Doctors</Link></li>
+          <li className="nav-item mb-2"><a href="/admin/patients" className="nav-link">Patients</a></li>
+          <li className="nav-item mb-2"><a href="/admin/appointments" className="nav-link">Appointments</a></li>
+          <li className="nav-item mb-2"><a href="/admin/records" className="nav-link">Records</a></li>
+        </ul>
+      </nav>
+
+      <main className="admin-main-content flex-grow-1 p-4 overflow-auto">
+        <header className="d-flex justify-content-between align-items-center mb-4">
+          <h2>Billings</h2>
+          <div>
+            <button
+              className={`btn btn-outline-primary me-2${activePanel === "filter" ? " active" : ""}`}
+              onClick={() => setActivePanel(activePanel === "filter" ? null : "filter")}
+              disabled={loading}
+              type="button"
+            >
+              Filter by Date Range
+            </button>
+            <button
+              className={`btn btn-outline-success${activePanel === "add" ? " active" : ""}`}
+              onClick={() => setActivePanel(activePanel === "add" ? null : "add")}
+              disabled={loading}
+              type="button"
+            >
+              Add Billing
+            </button>
+          </div>
+        </header>
+
+        {feedback && (
+          <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>
+            {feedback.message}
+          </div>
+        )}
+
+        {activePanel === "filter" && (
+          <div className="date-filter-section mb-4 d-flex align-items-center gap-2">
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={e => setDateFrom(e.target.value)}
+              className="form-control"
+              placeholder="From date"
+              disabled={loading}
+            />
+            <input
+              type="date"
+              value={dateTo}
+              onChange={e => setDateTo(e.target.value)}
+              className="form-control"
+              placeholder="To date"
+              disabled={loading}
+            />
+            <button onClick={fetchByDateRange} className="btn btn-primary" disabled={loading}>Filter</button>
+            <button onClick={cancelAddOrFilter} className="btn btn-secondary" disabled={loading}>Clear</button>
+          </div>
+        )}
+
+        {activePanel === "add" && (
+          <form onSubmit={submitForm} className="billing-form mb-4" style={{ maxWidth: "500px" }}>
+            <input
+              type="number"
+              name="appointmentID"
+              placeholder="Appointment ID"
+              value={formData.appointmentID}
+              onChange={handleInputChange}
+              disabled={loading}
+              className="form-control mb-2"
+              required
+            />
+            <input
+              type="date"
+              name="billingDate"
+              placeholder="Billing Date"
+              value={formData.billingDate}
+              onChange={handleInputChange}
+              disabled={loading}
+              className="form-control mb-2"
+              required
+            />
+            <select
+              name="statusID"
+              value={formData.statusID}
+              onChange={handleInputChange}
+              disabled={loading}
+              required
+              className="form-control mb-2"
+            >
+              <option value="">Select Status</option>
+              <option value="1">Pending</option>
+              <option value="2">Paid</option>
+              <option value="3">Cancelled</option>
+              <option value="4">Refunded</option>
+            </select>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="btn btn-primary me-2"
+              >
+                Add Billing
+              </button>
+              <button
+                type="button"
+                onClick={cancelAddOrFilter}
+                disabled={loading}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="billing-list">
+          {loading && <p>Loading billing records...</p>}
+          <table className="table table-striped">
+            <thead>
+              <tr>
+                <th>Billing ID</th>
+                <th>Patient ID</th>
+                <th>Appointment ID</th>
+                <th>Billing Date</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {billings.map(bill => (
+                <tr key={bill.billingID}>
+                  <td>{bill.billingID}</td>
+                  <td>{bill.patientID}</td>
+                  <td>{bill.appointmentID}</td>
+                  <td>{bill.billingDate?.slice(0, 10)}</td>
+                  <td>{bill.totalAmount}</td>
+                  <td>{bill.statusName}</td>
+                </tr>
+              ))}
+              {billings.length === 0 && !loading && (
+                <tr>
+                  <td colSpan="6">No billing records found.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default AdminBillings;
