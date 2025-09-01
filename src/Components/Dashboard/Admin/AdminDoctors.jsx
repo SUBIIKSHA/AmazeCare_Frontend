@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaBell, FaUserCircle, FaSignOutAlt, FaEdit, FaTrash } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import {
+  FaUserMd, FaUsers, FaCalendarAlt, FaFileAlt, FaFileMedical,
+  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt,FaTimes,FaBars,FaCog, FaEdit, FaTrash
+} from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import Logo from '../../../Images/Logo.png';
 
 
 const AdminDoctors = () => {
@@ -30,8 +34,6 @@ const AdminDoctors = () => {
   const [qualifications, setQualifications] = useState([]);
 
   const [showInactive, setShowInactive] = useState(false);
-
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
@@ -49,9 +51,9 @@ const AdminDoctors = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setDoctors(res.data?.["$values"] || []);
+        setDoctors(res.data?.["$values"] || res.data || []);
         setLoading(false);
-        setCurrentPage(1); // Reset page to 1
+        setCurrentPage(1); 
       })
       .catch((err) => {
         console.error(err);
@@ -66,8 +68,8 @@ const AdminDoctors = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setSpecializations(res.data.specializations?.["$values"] || []);
-        setQualifications(res.data.qualifications?.["$values"] || []);
+        setSpecializations(res.data.specializations?.["$values"] ||res.data.specializations || []);
+        setQualifications(res.data.qualifications?.["$values"] || res.data.qualifications || []);
       })
       .catch((err) => {
         console.error("Failed to fetch form data:", err);
@@ -90,14 +92,14 @@ const AdminDoctors = () => {
     sort: 0,
     pageNumber: 1,
     pageSize: 100,
-    statusIds: showInactive ? [2] : [1], // filter on backend
+    statusIds: showInactive ? [2] : [1], 
   };
 
 
     axios.post("http://localhost:5093/api/Doctor/search", searchRequest, {
   headers: { Authorization: `Bearer ${token}` }
       }).then((res) => {
-        const allDoctors = res.data?.doctors?.["$values"] || [];
+        const allDoctors = res.data?.doctors?.["$values"] || res.data?.doctors || [];
         const filteredDoctors = showInactive 
       ? allDoctors.filter(doc => Number(doc.statusID) === 2)
       : allDoctors.filter(doc => Number(doc.statusID) !== 2);
@@ -259,12 +261,10 @@ const AdminDoctors = () => {
     }
   };
 
-  // Filter doctors based on showInactive toggle
   const displayedDoctors = doctors.filter(doctor =>
     showInactive ? doctor.statusID === 2 : doctor.statusID !== 2
   );
 
-  // Pagination calculations using displayedDoctors
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentDoctors = displayedDoctors.slice(indexOfFirstRecord, indexOfLastRecord);
@@ -278,37 +278,35 @@ const AdminDoctors = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
       <nav className="admin-sidebar d-flex flex-column p-3">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Admin</h3>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/admin-dashboard" className="nav-link">
-              Dashboard
+        <ul className="nav flex-column ">
+          <li className="nav-item mb-2 " >
+            <Link to="/admin-dashboard" className="nav-link ">
+              <FaFileAlt className="me-2" /> Dashboard
             </Link>
           </li>
           <li className="nav-item mb-2">
             <Link to="/admin/doctors" className="nav-link active">
-              Doctors
+              <FaUserMd className="me-2" /> Doctors
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="/admin/patients" className="nav-link">
-              Patients
-            </a>
+            <Link to="/admin/patients" className="nav-link">
+              <FaUsers className="me-2" /> Patients
+            </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="/admin/appointments" className="nav-link">
-              Appointments
-            </a>
+            <Link to="/admin/appointments" className="nav-link">
+              <FaCalendarAlt className="me-2" /> Appointments
+            </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="#reports" className="nav-link">
-              Reports
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#settings" className="nav-link">
-              Settings
-            </a>
+            <Link to="/admin/settings" className="nav-link">
+              <FaCog className="me-2" /> Settings
+            </Link>
           </li>
         </ul>
       </nav>
@@ -324,8 +322,8 @@ const AdminDoctors = () => {
             </button>
           </div>
         </header>
+     
 
-        {/* Search and Add Doctor Section */}
         <div className="d-flex align-items-center mb-3 gap-2 flex-wrap">
           <div className="flex-grow-1 d-flex justify-content-center gap-2 flex-wrap">
             <input
@@ -345,7 +343,6 @@ const AdminDoctors = () => {
             </button>
           </div>
 
-          {/* Show Inactive Toggle */}
           <button
             className="btn btn-outline-info ms-auto"
             onClick={() => { setShowInactive(!showInactive); setCurrentPage(1); }}
@@ -396,14 +393,12 @@ const AdminDoctors = () => {
           )}
         </div>
 
-        {/* Feedback */}
         {feedback && (
           <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>
             {feedback.message}
           </div>
         )}
 
-        {/* Add/Edit Form */}
         {activePanel === "add" && (
           <form onSubmit={submitForm} className="doctor-form mb-4">
             <h3>{formMode === "add" ? "Add New Doctor" : "Edit Doctor"}</h3>
@@ -552,7 +547,6 @@ const AdminDoctors = () => {
           </form>
         )}
 
-        {/* Doctor List */}
         <div className="doctor-list">
           {loading && <p>Loading doctors...</p>}
           <table className="table table-striped">
@@ -612,7 +606,6 @@ const AdminDoctors = () => {
             </tbody>
           </table>
 
-          {/* Pagination */}
           {displayedDoctors.length > recordsPerPage && (
             <div className="pagination-controls mt-3 d-flex justify-content-center gap-2">
               <button

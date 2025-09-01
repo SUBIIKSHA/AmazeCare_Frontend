@@ -1,114 +1,277 @@
 .admin-dashboard-wrapper {
-  background: #f8f9fa;
+  background: #f4f9fc;
   min-height: 100vh;
-  overflow: hidden;
   display: flex;
   flex-direction: row;
+  font-family: "Segoe UI", Tahoma, sans-serif;
 }
 
 .admin-sidebar {
-  width: 220px;
+  width: 240px;
   height: 100vh;
-  border-right: 1px solid #dee2e6;
-  padding-top: 1rem;
-  background-color: #d8f4f3;
+  background: linear-gradient(180deg, #4b82d3, #06c0b8);
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: -240px;
+  transition: left 0.3s ease;
+  z-index: 1050;
+
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  width: 100%; 
+  text-align: center; 
+}
+.admin-sidebar.open {
+  left: 0;
+}
+
+@media (min-width: 992px) {
+  .admin-sidebar {
+    left: 0;
+    position: relative;
+  }
 }
 
 .admin-sidebar h3 {
-  color: #0049b7;
-  padding-left: 1rem;
   font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  letter-spacing: 1px;
 }
 
 .admin-sidebar .nav-link {
-  color: #333;
+  color: #e8f6f7;
   font-weight: 600;
-  padding: 10px 20px;
-  transition: background-color 0.3s ease;
+  padding: 8px 14px;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  text-align: center;
 }
 
 .admin-sidebar .nav-link:hover,
 .admin-sidebar .nav-link.active {
-  background-color: #0049b7;
+  background-color: rgba(255, 255, 255, 0.2);
   color: #fff;
-  border-radius: 4px;
+}
+
+.sidebar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.sidebar-logo img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+
+.admin-header {
+  background: #ffffff;
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.icon-hover {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.icon-hover:hover {
+  color: #0d6efd;
 }
 
 .admin-main-content {
-  overflow-y: auto;
-  height: 100vh;
+  flex-grow: 1;
   padding: 2rem;
+  background: #f8fbff;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
 }
 
-header h2 {
-  color: #0049b7;
-  font-weight: 700;
-}
 
 .dashboard-cards .card {
-  border-radius: 8px;
-  transition: transform 0.2s ease;
+  border-radius: 16px;
+  border: none;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 73, 183, 0.12);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .dashboard-cards .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 73, 183, 0.15);
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 73, 183, 0.2);
 }
 
 .card-title {
   color: #0049b7;
   font-weight: 700;
-  margin-bottom: 0.5rem;
 }
 
 .card-text {
-  color: #333;
-  font-weight: 600;
-  margin-bottom: 1.25rem;
+  color: #444;
+  font-weight: 500;
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, #0049b7 0%, #06c0b8 100%);
+  background: linear-gradient(90deg, #0049b7, #06c0b8);
   border: none;
-  transition: background 0.3s ease;
+  border-radius: 10px;
+  font-weight: 600;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(90deg, #06c0b8 0%, #0049b7 100%);
+  background: linear-gradient(90deg, #06c0b8, #0049b7);
 }
 
-.billing-overview .card-body {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2rem;
+.table thead {
+  background-color: #0049b7;
+  color: #fff;
 }
 
-.billing-overview .card-title {
-  margin-bottom: 0.5rem;
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 73, 183, 0.08);
 }
 
-.billing-overview p {
-  margin: 0.2rem 0;
+.table td .badge {
+  padding: 6px 10px;
+  border-radius: 12px;
   font-weight: 600;
-  color: #333;
 }
 
-.table thead  {
-  background-color: #0049b7;  /* Deep blue background */
-  color: #fff;                 /* White text */
-  border-bottom: 2px solid #003a99; /* Darker border at bottom */
+.status-pending { background: #ffc107; color: #fff; }
+.status-completed { background: #28a745; color: #fff; }
+.status-cancelled { background: #dc3545; color: #fff; }
+.status-scheduled { background: #17a2b8; color: #fff; }
+.status-rejected { background: #6c757d; color: #fff; }
+
+
+/* Doctor Form */
+.doctor-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 73, 183, 0.08);
+  max-width: 700px;
+  margin: 20px auto;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-.color-table{
-  background-color: #0049b7;  /* Deep blue background */
-  color: #fff;              
+
+.doctor-form:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 73, 183, 0.15);
 }
-.dashboard-analytics .card {
+
+.doctor-form h3 {
+  color: #0049b7;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.doctor-form input,
+.doctor-form select {
+  border-radius: 10px;
+  border: 1px solid #ced4da;
+  padding: 10px 12px;
+  transition: all 0.2s ease;
+}
+
+.doctor-form input:focus,
+.doctor-form select:focus {
+  border-color: #0049b7;
+  box-shadow: 0 0 6px rgba(0, 73, 183, 0.25);
+  outline: none;
+}
+
+/* Buttons in form */
+.doctor-form .btn-primary {
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(0, 73, 183, 0.15);
+  transition: all 0.2s ease;
+}
+
+.doctor-form .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 73, 183, 0.2);
+}
+
+.doctor-list table {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 73, 183, 0.08);
+}
+
+.doctor-list table thead {
+  background: linear-gradient(90deg, #0049b7, #06c0b8);
+  color: #fff;
+}
+
+.doctor-list table tbody tr:hover {
+  background-color: rgba(0, 73, 183, 0.05);
+  transition: background-color 0.2s;
+}
+
+.doctor-list .btn-outline-warning,
+.doctor-list .btn-outline-danger {
   border-radius: 8px;
-  transition: transform 0.2s ease;
+  padding: 4px 8px;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
-.dashboard-analytics .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 73, 183, 0.15);
+.doctor-list .btn-outline-warning:hover {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #fff;
+}
+
+.doctor-list .btn-outline-danger:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+}
+
+.pagination-controls button {
+  border-radius: 8px;
+  min-width: 36px;
+  padding: 6px 12px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.pagination-controls button:hover {
+  transform: translateY(-2px);
+}
+
+.alert {
+  border-radius: 10px;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 73, 183, 0.08);
+}
+
+.btn-outline-info {
+  border-radius: 10px;
+  font-weight: 600;
+  padding: 6px 12px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-info:hover {
+  background: #06c0b8;
+  color: #fff;
 }

@@ -10,10 +10,7 @@ import { RegisterModel } from '../../Models/register.model';
 import { RegisterErrorModel } from '../../Models/registererror.model';
 
 
-import Logo from '../../Images/Logo.png';
-
-
-// Gender master (update IDs to match backend)
+import Logo from "../../Images/Logo.png";
 const genderMap = {
   "Male": 1,
   "Female": 2,
@@ -21,8 +18,8 @@ const genderMap = {
 };
 
 
-const PATIENT_ROLE_ID = 3; // Set your correct Patient role id
-const ACTIVE_STATUS_ID = 1; // Set your correct Active status id
+const PATIENT_ROLE_ID = 3; 
+const ACTIVE_STATUS_ID = 1; 
 
 
 const Register = () => {
@@ -30,8 +27,6 @@ const Register = () => {
   const [errors, setErrors] = useState(new RegisterErrorModel());
   const navigate = useNavigate();
 
-
-  // Handles change for all fields, including mapping gender label to ID
   const changeUser = (event) => {
     const { name, value } = event.target;
     let curErrors = { ...errors };
@@ -79,14 +74,12 @@ const Register = () => {
     for (const key in errors) {
       if (errors[key]) return;
     }
-    // Only check visible fields from the form
     for (const key of ["fullName","dob","gender","bloodGroup","contactNumber","address","username","email","password"]) {
       if (!user[key]) {
         alert("Please fill all required fields.");
         return;
       }
     }
-    // Payload: send only genderID, not label, with fixed role/status
     const payload = {
       fullName: user.fullName,
       dob: user.dob,
@@ -119,7 +112,6 @@ const Register = () => {
 
   return (
     <div className="login-wrapper d-flex ">
-      {/* Left branding/info */}
       <div className="login-left d-flex flex-column justify-content-center align-items-start text-white px-5">
         <div className="hospital-brand mb-4 d-flex align-items-center">
           <img src={Logo} alt="AmazeCare Logo" className="hospital-logo me-3" />
@@ -134,7 +126,6 @@ const Register = () => {
           <li>✔ Skilled Medical Professionals</li>
         </ul>
       </div>
-      {/* Right form */}
       <div className="login-right d-flex justify-content-center align-items-center flex-grow-1">
         <div className="card shadow-lg login-card p-5" style={{ minWidth: "400px", maxWidth: "480px" }}>
           <div className="login-card-logo mb-3">

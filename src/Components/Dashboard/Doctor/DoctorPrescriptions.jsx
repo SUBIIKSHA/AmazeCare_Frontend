@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import {
-  FaUserMd, FaUsers, FaCalendarAlt, FaFileAlt, FaFileMedical,
-  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt,FaTimes,FaBars,FaCog, FaEdit, FaTrash
+  FaHome,
+  FaCalendarAlt,
+  FaUserInjured,
+  FaNotesMedical,
+  FaPrescriptionBottleAlt,
+  FaVials,
+  FaCreditCard,
+  FaUserCircle,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import Logo from '../../../Images/Logo.png';
 
 const patternOptions = [
   { id: 1, code: "1-0-0", timing: "BF" },
@@ -17,10 +21,10 @@ const patternOptions = [
   { id: 6, code: "0-1-1", timing: "BF" },
 ];
 
-const AdminPrescriptions = () => {
+const DoctorPrescriptions = () => {
   const navigate = useNavigate();
   const [prescriptions, setPrescriptions] = useState([]);
-  const [tests, setTests] = useState([]); 
+  const [tests, setTests] = useState([]);
   const [activePanel, setActivePanel] = useState(null);
   const [formData, setFormData] = useState({
     recordID: "",
@@ -34,24 +38,41 @@ const AdminPrescriptions = () => {
   const [feedback, setFeedback] = useState(null);
 
   const token = sessionStorage.getItem("token");
+  const doctorId = sessionStorage.getItem("doctorID");
 
   useEffect(() => {
-    fetchPrescriptions();
-    fetchAllTests(); 
-  }, []);
+  fetchPrescriptionsAndRecords();
+  fetchAllTests();
+}, []);
 
-  const fetchPrescriptions = () => {
-    setLoading(true);
-    axios
-      .get("http://localhost:5093/api/Prescription", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((res) => {
-        setPrescriptions(res.data?.["$values"] || res.data || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  };
+
+  const fetchPrescriptionsAndRecords = async () => {
+  setLoading(true);
+  try {
+    const [presRes, recRes] = await Promise.all([
+      axios.get("http://localhost:5093/api/Prescription", { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get("http://localhost:5093/api/MedicalRecord", { headers: { Authorization: `Bearer ${token}` } }),
+    ]);
+
+    const allPrescriptions = presRes.data?.["$values"] || presRes.data || [];
+    const allRecords = recRes.data?.["$values"] || recRes.data || [];
+
+    // Filter records by logged-in doctor
+    const doctorRecords = allRecords.filter((r) => r.doctorID && r.doctorID.toString() === doctorId.toString());
+    const doctorRecordIDs = doctorRecords.map((r) => r.recordID);
+
+    // Filter prescriptions linked to doctor's medical records
+    const doctorPrescriptions = allPrescriptions.filter((p) => doctorRecordIDs.includes(p.recordID));
+
+    setPrescriptions(doctorPrescriptions);
+  } catch (error) {
+    setFeedback({ type: "error", message: "Failed to fetch prescriptions or records." });
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const fetchAllTests = () => {
     axios
@@ -91,7 +112,7 @@ const AdminPrescriptions = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(() => {
-        fetchPrescriptions();
+        fetchPrescriptionsAndRecords();
         setActivePanel(null);
         setFormData({
           recordID: "",
@@ -109,7 +130,10 @@ const AdminPrescriptions = () => {
         setLoading(false);
       });
   };
-
+ const logout = () => {
+    sessionStorage.clear();
+    navigate("/login");
+  };
   const cancelAdd = () => {
     setActivePanel(null);
     setFormData({
@@ -124,64 +148,63 @@ const AdminPrescriptions = () => {
   };
 
   return (
-    <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
-      <nav className="admin-sidebar d-flex flex-column p-3">
-        <div className="sidebar-logo">
-          <img src={Logo} alt="Logo" />
-        </div>
-        <h3 className="mb-4">AmazeCare Admin</h3>
-        <ul className="nav flex-column ">
-          <li className="nav-item mb-2 " >
-            <Link to="/admin-dashboard" className="nav-link active">
-              <FaFileAlt className="me-2" /> Dashboard
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/admin/doctors" className="nav-link">
-              <FaUserMd className="me-2" /> Doctors
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/admin/patients" className="nav-link">
-              <FaUsers className="me-2" /> Patients
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/admin/appointments" className="nav-link">
-              <FaCalendarAlt className="me-2" /> Appointments
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/admin/settings" className="nav-link">
-              <FaCog className="me-2" /> Settings
-            </Link>
-          </li>
-        </ul>
-      </nav>
+      <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
+        <nav className="admin-sidebar d-flex flex-column p-3">
+          <h3 className="mb-4">AmazeCare Doctor</h3>
+          <ul className="nav flex-column">
+            <li className="nav-item mb-2">
+              <Link to="/doctor-dashboard" className="nav-link">
+                <FaHome className="me-2" /> Overview
+              </Link>
+            </li>
+            <li className="nav-item mb-2">
+              <Link to="/doctor/patients" className="nav-link">
+                <FaUserInjured className="me-2" /> Patients
+              </Link>
+            </li>
+            <li className="nav-item mb-2">
+              <Link to="/doctor/appointments" className="nav-link">
+                <FaCalendarAlt className="me-2" /> Appointments
+              </Link>
+            </li>
+            <li className="nav-item mb-2">
+          <Link to="/doctor/records" className="nav-link">
+            <FaNotesMedical className="me-2" /> Medical Records
+          </Link>
+        </li>
+        <li className="nav-item mb-2">
+          <Link to="/doctor/prescriptions" className="nav-link active">
+            <FaPrescriptionBottleAlt className="me-2" /> Prescriptions
+          </Link>
+        </li>
+        <li className="nav-item mb-2">
+          <Link to="/doctor/tests" className="nav-link">
+            <FaVials className="me-2" /> Tests
+          </Link>
+        </li>
+          </ul>
+        </nav>
+  
         <main className="admin-main-content flex-grow-1 p-4 overflow-auto">
-        <header className="d-flex justify-content-between align-items-center mb-4">
-          <h2>Prescriptions</h2>
-          <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
-            <button
-              className="btn btn-outline-danger d-flex align-items-center gap-2"
-              disabled={loading}
-              onClick={() => navigate("/login")}
+          <header className="d-flex justify-content-between align-items-center mb-4">
+            <h2>Prescriptions</h2>
+            <div className="d-flex align-items-center gap-3">
+              <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+              <button className="btn btn-outline-danger" disabled={loading} onClick={logout}>
+                Logout
+              </button>
+            </div>
+          </header>
+            <div className="d-flex justify-content-end mb-3 gap-2 flex-wrap">
+                <button
+                className={`btn btn-outline-success${activePanel === "add" ? " active" : ""}`}
+                onClick={() => setActivePanel(activePanel === "add" ? null : "add")}
+                disabled={loading}
+                type="button"
             >
-              <FaSignOutAlt /> Logout
+                {activePanel === "add" ? "Close Add Form" : "Add Prescription"}
             </button>
-          </div>
-        </header>
-
-      <div style={{ display: "flex", justifyContent: "flex-end" }}><button
-            className={`btn btn-outline-success${activePanel === "add" ? " active" : ""}`}
-            onClick={() => setActivePanel(activePanel === "add" ? null : "add")}
-            disabled={loading}
-            type="button"
-          >
-            {activePanel === "add" ? "Close" : "Add Prescription"}
-          </button></div>
+            </div>
 
         {feedback && (
           <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>
@@ -276,27 +299,28 @@ const AdminPrescriptions = () => {
                 <th>Quantity</th>
                 <th>Days</th>
                 <th>Notes</th>
-                <th>Tests</th> 
+                <th>Tests</th>
               </tr>
             </thead>
             <tbody>
-              {prescriptions.map((rx) => (
-                <tr key={rx.prescriptionID}>
-                  <td>{rx.prescriptionID}</td>
-                  <td>{rx.recordID}</td>
-                  <td>{rx.medicineName}</td>
-                  <td>{rx.patternCode}</td>
-                  <td>{rx.dosageTiming}</td>
-                  <td>{rx.quantity}</td>
-                  <td>{rx.days}</td>
-                  <td>{rx.notes}</td>
-                  <td>{getTestsForPrescription(rx.prescriptionID)}</td> 
-                </tr>
-              ))}
-              {prescriptions.length === 0 && !loading && (
+              {prescriptions.length === 0 && !loading ? (
                 <tr>
                   <td colSpan="9">No prescriptions found.</td>
                 </tr>
+              ) : (
+                prescriptions.map((rx) => (
+                  <tr key={rx.prescriptionID}>
+                    <td>{rx.prescriptionID}</td>
+                    <td>{rx.recordID}</td>
+                    <td>{rx.medicineName}</td>
+                    <td>{rx.patternCode}</td>
+                    <td>{rx.dosageTiming}</td>
+                    <td>{rx.quantity}</td>
+                    <td>{rx.days}</td>
+                    <td>{rx.notes}</td>
+                    <td>{getTestsForPrescription(rx.prescriptionID)}</td>
+                  </tr>
+                ))
               )}
             </tbody>
           </table>
@@ -306,4 +330,4 @@ const AdminPrescriptions = () => {
   );
 };
 
-export default AdminPrescriptions;
+export default DoctorPrescriptions;

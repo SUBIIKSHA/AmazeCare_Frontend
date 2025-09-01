@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaBell, FaUserCircle, FaSignOutAlt, FaEdit, FaTrash } from "react-icons/fa";
+import {
+  FaUserMd, FaUsers, FaCalendarAlt, FaFileAlt, FaFileMedical,
+  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt,FaTimes,FaBars,FaCog, FaEdit, FaTrash
+} from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Logo from '../../../Images/Logo.png';
 
 const AdminPatients = () => {
   const navigate = useNavigate();
@@ -64,7 +68,7 @@ const AdminPatients = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        setGenders(res.data.genders?.["$values"] || []);
+        setGenders(res.data.genders?.["$values"] || res.data.genders || []);
       })
       .catch((err) => {
         console.error("Failed to fetch form data:", err);
@@ -87,7 +91,6 @@ const AdminPatients = () => {
       pageNumber: 1,
       pageSize: 100,
       statusIds: showInactive ? [2] : [1],
-      // Add other search filters if your API supports
     };
 
     axios
@@ -172,7 +175,7 @@ const AdminPatients = () => {
       username: formData.username,
       email: formData.email,
       password: formData.password,
-      roleID: 3, // Assuming 3 corresponds to patient role
+      roleID: 3, 
       statusID: 1,
     };
 
@@ -257,12 +260,10 @@ const AdminPatients = () => {
     }
   };
 
-  // Filter patients based on showInactive toggle
   const displayedPatients = patients.filter((patient) =>
     showInactive ? patient.statusID === 2 : patient.statusID !== 2
   );
 
-  // Pagination calculations using displayedPatients
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentPatients = displayedPatients.slice(indexOfFirstRecord, indexOfLastRecord);
@@ -276,37 +277,35 @@ const AdminPatients = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
       <nav className="admin-sidebar d-flex flex-column p-3">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Admin</h3>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/admin-dashboard" className="nav-link">
-              Dashboard
+        <ul className="nav flex-column ">
+          <li className="nav-item mb-2 " >
+            <Link to="/admin-dashboard" className="nav-link ">
+              <FaFileAlt className="me-2" /> Dashboard
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="/admin/doctors" className="nav-link">
-              Doctors
-            </a>
+            <Link to="/admin/doctors" className="nav-link">
+              <FaUserMd className="me-2" /> Doctors
+            </Link>
           </li>
           <li className="nav-item mb-2">
             <Link to="/admin/patients" className="nav-link active">
-              Patients
+              <FaUsers className="me-2" /> Patients
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="/admin/appointments" className="nav-link">
-              Appointments
-            </a>
+            <Link to="/admin/appointments" className="nav-link">
+              <FaCalendarAlt className="me-2" /> Appointments
+            </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="#reports" className="nav-link">
-              Reports
-            </a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#settings" className="nav-link">
-              Settings
-            </a>
+            <Link to="/admin/settings" className="nav-link">
+              <FaCog className="me-2" /> Settings
+            </Link>
           </li>
         </ul>
       </nav>
@@ -327,7 +326,6 @@ const AdminPatients = () => {
           </div>
         </header>
 
-        {/* Search and Add Patient Section */}
         <div className="d-flex align-items-center mb-3 gap-2 flex-wrap">
           <div className="flex-grow-1 d-flex justify-content-center gap-2 flex-wrap">
             <input
@@ -347,7 +345,6 @@ const AdminPatients = () => {
             </button>
           </div>
 
-          {/* Show Inactive Toggle */}
           <button
             className="btn btn-outline-info ms-auto"
             onClick={() => {
@@ -401,14 +398,12 @@ const AdminPatients = () => {
           )}
         </div>
 
-        {/* Feedback */}
         {feedback && (
           <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>
             {feedback.message}
           </div>
         )}
 
-        {/* Add/Edit Form */}
         {activePanel === "add" && (
           <form onSubmit={submitForm} className="patient-form mb-4">
             <h3>{formMode === "add" ? "Add New Patient" : "Edit Patient"}</h3>
@@ -550,7 +545,6 @@ const AdminPatients = () => {
           </form>
         )}
 
-        {/* Patient List */}
         <div className="patient-list">
           {loading && <p>Loading patients...</p>}
           <table className="table table-striped">
@@ -610,7 +604,6 @@ const AdminPatients = () => {
             </tbody>
           </table>
 
-          {/* Pagination */}
           {displayedPatients.length > recordsPerPage && (
             <div className="pagination-controls mt-3 d-flex justify-content-center gap-2">
               <button

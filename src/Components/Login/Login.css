@@ -1,11 +1,10 @@
 .login-wrapper {
   background: linear-gradient(135deg, #0049B7 0%, #06C0B8 100%);
-  min-height: 100vh;          /* changed from height */
-  overflow-y: hidden;           /* allow vertical scrolling */
+  min-height: 100vh;          
+  overflow-y: hidden;          
   display: flex;
   flex-direction: row;
 }
-/* Logo inside login card top-left */
 .login-card-logo {
   display: flex;
   align-items: center;
@@ -18,13 +17,11 @@
   margin-bottom: 0;
 }
 
-/* Adjust margin for login page */
 .text-muted.mb-4 {
   margin-bottom: 1.5rem !important;
   margin-right: 80px;
 }
 
-/* Left side styling */
 .login-left {
   flex: 1;
   color: #fff;
@@ -64,7 +61,6 @@
 }
 
 
-/* Right side styling */
 .login-right {
   flex: 1;
   background: #f9fcff;
@@ -128,7 +124,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-/* Register link style */
 .register-link a {
   color: #06C0B8;
   text-decoration: none;
@@ -138,16 +133,12 @@
   text-decoration: underline;
 }
 
-
-/* Responsive Styles */
-
-/* Medium devices (tablets, 768px and up) */
 @media (max-width: 991.98px) {
    .login-wrapper {
     flex-direction: column;
     min-height: 100vh;
     overflow-y: auto;
-    height: auto;  /* allow natural height */
+    height: auto;
   }
 .login-right {
   overflow-y: auto;
@@ -166,10 +157,9 @@
 
 }
 
-/* Small devices (landscape phones, less than 768px) */
 @media (max-width: 767.98px) {
   .login-left {
-    display: none; /* Hide left side on small devices for simpler UX */
+    display: none; 
   }
 
   .login-right {
@@ -187,16 +177,13 @@
   }
 
   .hospital-logo-login {
-    margin-left: 0; /* Adjust margin if needed */
+    margin-left: 0; 
   }
-
-  /* Adjust margins for text-muted */
   .text-muted.mb-4 {
     margin-right: 0 !important;
   }
 }
 
-/* Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) {
   .login-card {
     padding: 1.5rem;

@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import {
+  FaUserMd, FaUsers, FaCalendarAlt, FaFileAlt, FaFileMedical,
+  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt,FaTimes,FaBars,FaCog, FaEdit, FaTrash
+} from "react-icons/fa";
+import Logo from '../../../Images/Logo.png';
 
 const AdminRecords = () => {
+  const navigate = useNavigate();
   const [records, setRecords] = useState([]);
-  const [activePanel, setActivePanel] = useState(null); // 'add' | null
-  const [formMode, setFormMode] = useState("add"); // "add" or "edit"
+  const [activePanel, setActivePanel] = useState(null); 
+  const [formMode, setFormMode] = useState("add"); 
   const [editingRecord, setEditingRecord] = useState(null);
   const [formData, setFormData] = useState({
     patientID: "",
@@ -32,7 +38,7 @@ const AdminRecords = () => {
     axios.get("http://localhost:5093/api/MedicalRecord", {
       headers: { Authorization: `Bearer ${token}` }
     }).then(res => {
-      setRecords(res.data?.["$values"] || []);
+      setRecords(res.data?.["$values"] || res.data || []);
       setLoading(false);
     }).catch(err => {
       setLoading(false);
@@ -127,27 +133,62 @@ const AdminRecords = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
       <nav className="admin-sidebar d-flex flex-column p-3">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Admin</h3>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2"><Link to="/admin-dashboard" className="nav-link">Dashboard</Link></li>
-          <li className="nav-item mb-2"><Link to="/admin/doctors" className="nav-link">Doctors</Link></li>
-          <li className="nav-item mb-2"><a href="/admin/patients" className="nav-link">Patients</a></li>
-          <li className="nav-item mb-2"><a href="/admin/appointments" className="nav-link">Appointments</a></li>
-          <li className="nav-item mb-2"><a href="/admin/records" className="nav-link active">Records</a></li>
-          <li className="nav-item mb-2"><a href="#settings" className="nav-link">Settings</a></li>
+        <ul className="nav flex-column ">
+          <li className="nav-item mb-2 " >
+            <Link to="/admin-dashboard" className="nav-link active">
+              <FaFileAlt className="me-2" /> Dashboard
+            </Link>
+          </li>
+          <li className="nav-item mb-2">
+            <Link to="/admin/doctors" className="nav-link">
+              <FaUserMd className="me-2" /> Doctors
+            </Link>
+          </li>
+          <li className="nav-item mb-2">
+            <Link to="/admin/patients" className="nav-link">
+              <FaUsers className="me-2" /> Patients
+            </Link>
+          </li>
+          <li className="nav-item mb-2">
+            <Link to="/admin/appointments" className="nav-link">
+              <FaCalendarAlt className="me-2" /> Appointments
+            </Link>
+          </li>
+          <li className="nav-item mb-2">
+            <Link to="/admin/settings" className="nav-link">
+              <FaCog className="me-2" /> Settings
+            </Link>
+          </li>
         </ul>
       </nav>
-
-      <main className="admin-main-content flex-grow-1 p-4 overflow-auto">
+        <main className="admin-main-content flex-grow-1 p-4 overflow-auto">
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Medical Records</h2>
-          <button
+          <div className="d-flex align-items-center gap-3">
+            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <button
+              className="btn btn-outline-danger d-flex align-items-center gap-2"
+              disabled={loading}
+              onClick={() => navigate("/login")}
+            >
+              <FaSignOutAlt /> Logout
+            </button>
+          </div>
+        </header>
+
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
             className={`btn btn-outline-success${activePanel === 'add' ? ' active' : ''}`}
             onClick={() => setActivePanel(activePanel === 'add' ? null : 'add')}
             disabled={loading}
             type="button"
           >Add Record</button>
-        </header>
+      </div>
 
         {feedback && (
           <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>

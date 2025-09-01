@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
-  FaBell,
-  FaUserCircle,
-  FaSignOutAlt,
-  FaEdit,
-  FaTimes,
+  FaUserMd, FaUsers, FaCalendarAlt, FaFileAlt, FaFileMedical,
+  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt,FaTimes,FaBars,FaCog, FaEdit, FaTrash
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Logo from '../../../Images/Logo.png';
+import "./AdminDashboard.css";
+
+
 
 const AdminAppointments = () => {
   const navigate = useNavigate();
@@ -17,9 +18,8 @@ const AdminAppointments = () => {
   const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
-  const [statusFilter, setStatusFilter] = useState(""); // filter value
+  const [statusFilter, setStatusFilter] = useState(""); 
 
-  // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
@@ -92,6 +92,23 @@ const AdminAppointments = () => {
       { statusID: 5, statusName: "Rejected" },
     ]);
   };
+  
+  const getStatusClass = (statusName) => {
+  switch (statusName?.toLowerCase()) {
+    case "pending":
+      return "badge status-pending";
+    case "completed":
+      return "badge status-completed";
+    case "cancelled":
+      return "badge status-cancelled";
+    case "scheduled":
+      return "badge status-scheduled";
+    case "rejected":
+      return "badge status-rejected";
+    default:
+      return "badge bg-secondary";
+  }
+};
 
   const handleStatusFilterChange = (e) => {
     const selectedStatusName = e.target.value;
@@ -118,7 +135,6 @@ const AdminAppointments = () => {
     setLoading(true);
     const normalizedSearch = searchTerm.trim().toLowerCase();
 
-    // Client-side filtering by patient or doctor name on current appointments
     const filtered = appointments.filter(
       (appt) =>
         (appt.patientName && appt.patientName.toLowerCase().includes(normalizedSearch)) ||
@@ -139,7 +155,6 @@ const AdminAppointments = () => {
 
   const displayedAppointments = appointments;
 
-  // Pagination calculations
   const indexOfLastRecord = currentPage * recordsPerPage;
   const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
   const currentAppointments = displayedAppointments.slice(indexOfFirstRecord, indexOfLastRecord);
@@ -184,7 +199,7 @@ const AdminAppointments = () => {
     axios
       .put(
         `http://localhost:5093/api/Appointment/reschedule/${appointment.appointmentID}`,
-        JSON.stringify(newDateTimeISO), // raw JSON string body
+        JSON.stringify(newDateTimeISO), 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -211,29 +226,35 @@ const AdminAppointments = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
       <nav className="admin-sidebar d-flex flex-column p-3">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Admin</h3>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/admin-dashboard" className="nav-link">
-              Dashboard
+        <ul className="nav flex-column ">
+          <li className="nav-item mb-2 " >
+            <Link to="/admin-dashboard" className="nav-link ">
+              <FaFileAlt className="me-2" /> Dashboard
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="/admin/doctors" className="nav-link">Doctors</a>
+            <Link to="/admin/doctors" className="nav-link">
+              <FaUserMd className="me-2" /> Doctors
+            </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="/admin/patients" className="nav-link">Patients</a>
+            <Link to="/admin/patients" className="nav-link">
+              <FaUsers className="me-2" /> Patients
+            </Link>
           </li>
           <li className="nav-item mb-2">
             <Link to="/admin/appointments" className="nav-link active">
-              Appointments
+              <FaCalendarAlt className="me-2" /> Appointments
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <a href="#reports" className="nav-link">Reports</a>
-          </li>
-          <li className="nav-item mb-2">
-            <a href="#settings" className="nav-link">Settings</a>
+            <Link to="/admin/settings" className="nav-link">
+              <FaCog className="me-2" /> Settings
+            </Link>
           </li>
         </ul>
       </nav>
@@ -254,7 +275,6 @@ const AdminAppointments = () => {
           </div>
         </header>
 
-        {/* Search and Status Filter Section */}
         <div className="d-flex align-items-center mb-3 gap-2 flex-wrap">
           <div className="flex-grow-1 d-flex justify-content-center gap-2 flex-wrap">
             <input
@@ -290,24 +310,22 @@ const AdminAppointments = () => {
           </select>
         </div>
 
-        {/* Feedback */}
         {feedback && (
           <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>
             {feedback.message}
           </div>
         )}
 
-        {/* Appointment List */}
-        <div className="appointment-list">
+        <div className="appointment-list" >
           {loading && <p>Loading appointments...</p>}
-          <table className="table table-striped">
+          <div style={{ overflowX: "auto", width: "100%"}}>
+          <table className="table table-striped" style={{ minWidth: "900px" }}>
             <thead style={{ backgroundColor: "blue", color: "white" }}>
               <tr>
                 <th>ID</th>
                 <th>Patient</th>
                 <th>Doctor</th>
                 <th>Symptoms</th>
-                <th>Visit Reason</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Status</th>
@@ -318,37 +336,42 @@ const AdminAppointments = () => {
               {currentAppointments.map((appt) => (
                 <tr key={appt.appointmentID}>
                   <td>{appt.appointmentID}</td>
-                  <td>{appt.patientName || appt.patient?.fullName || "Unknown"}</td>
-                  <td>{appt.doctorName || appt.doctor?.name || "Unknown"}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>{appt.patientName || appt.patient?.fullName || "Unknown"}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>{appt.doctorName || appt.doctor?.name || "Unknown"}</td>
                   <td>{appt.symptoms}</td>
-                  <td>{appt.visitReason}</td>
                   <td>{appt.appointmentDateTime ? new Date(appt.appointmentDateTime).toLocaleDateString() : ""}</td>
-                  <td>{appt.appointmentDateTime ? new Date(appt.appointmentDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}</td>
-                  <td>{getStatusName(appt.statusID) || appt.status}</td>
+                  <td style={{ whiteSpace: "nowrap" }}>{appt.appointmentDateTime ? new Date(appt.appointmentDateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ""}</td>
                   <td>
-                    {(appt.statusID !== 4 /* Cancelled */ && appt.statusName !== "Cancelled") && (
-                      <>
-                        <button
-                          onClick={() => handleRescheduleClick(appt)}
-                          disabled={loading}
-                          title="Reschedule"
-                          className="btn btn-sm btn-outline-primary me-2"
-                          style={{ padding: "4px 8px", fontSize: "14px" }}
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          onClick={() => cancelAppointment(appt.appointmentID)}
-                          disabled={loading}
-                          title="Cancel"
-                          className="btn btn-sm btn-outline-danger"
-                          style={{ padding: "4px 8px", fontSize: "14px" }}
-                        >
-                          <FaTimes />
-                        </button>
-                      </>
-                    )}
-                  </td>
+                  <span className={getStatusClass(getStatusName(appt.statusID) || appt.status)}>
+                    {getStatusName(appt.statusID) || appt.status}
+                  </span>
+                </td>
+
+                  <td style={{ minWidth: "90px" }}>
+                  {(appt.statusID !== 4 && appt.statusName !== "Cancelled") && (
+                    <div className="d-flex align-items-center justify-content-center" style={{ gap: "6px" }}>
+                      <button
+                        onClick={() => handleRescheduleClick(appt)}
+                        disabled={loading}
+                        title="Reschedule"
+                        className="btn btn-sm btn-outline-primary"
+                        style={{ padding: "4px 8px", fontSize: "14px" }}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        onClick={() => cancelAppointment(appt.appointmentID)}
+                        disabled={loading}
+                        title="Cancel"
+                        className="btn btn-sm btn-outline-danger"
+                        style={{ padding: "4px 8px", fontSize: "14px" }}
+                      >
+                        <FaTimes />
+                      </button>
+                    </div>
+                  )}
+                </td>
+
                 </tr>
               ))}
               {displayedAppointments.length === 0 && !loading && (
@@ -358,8 +381,8 @@ const AdminAppointments = () => {
               )}
             </tbody>
           </table>
+          </div>
 
-          {/* Pagination */}
           {displayedAppointments.length > recordsPerPage && (
             <div className="pagination-controls mt-3 d-flex justify-content-center gap-2">
               <button

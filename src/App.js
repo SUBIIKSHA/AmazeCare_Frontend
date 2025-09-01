@@ -2,6 +2,11 @@ import Login from './Components/Login/Login';
 import Register from './Components/Register/Register';
 import AdminDashboard from './Components/Dashboard/Admin/AdminDashboard';
 import DoctorDashboard from './Components/Dashboard/Doctor/DoctorDashboard';
+import DoctorPatients from './Components/Dashboard/Doctor/DoctorPatients';
+import DoctorAppointments from './Components/Dashboard/Doctor/DoctorAppointments';
+import DoctorRecords from './Components/Dashboard/Doctor/DoctorRecords';
+import DoctorPrescriptions from './Components/Dashboard/Doctor/DoctorPrescriptions';
+import DoctorTests from './Components/Dashboard/Doctor/DoctorTests';
 import PatientDashboard from './Components/Dashboard/Patient/PatientDashboard';
 import PatientDoctors from './Components/Dashboard/Patient/PatientDoctors';
 import PatientRecords from './Components/Dashboard/Patient/PatientRecords';
@@ -34,6 +39,11 @@ function App() {
         <Route path="/admin/tests" element={<AdminTests />} />
 
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
+        <Route path="/doctor/patients" element={<DoctorPatients />} />
+        <Route path="/doctor/appointments" element={<DoctorAppointments />} />
+        <Route path="/doctor/records" element={<DoctorRecords />} />
+        <Route path="/doctor/prescriptions" element={<DoctorPrescriptions />} />
+        <Route path="/doctor/tests" element={<DoctorTests />} />
 
         <Route path="/patient-dashboard" element={<PatientDashboard />} />
         <Route path="/patient/doctors" element={<PatientDoctors />} />

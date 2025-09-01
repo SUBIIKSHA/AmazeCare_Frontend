@@ -9,11 +9,12 @@ import {
   FaUserInjured,
   FaNotesMedical,
   FaFileMedicalAlt,
-  FaBell,
   FaUserCircle,
+  FaPrescriptionBottleAlt,
+  FaVials,
+  FaCreditCard,
 } from "react-icons/fa";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-
 
 function DoctorDashboard() {
   const location = useLocation();
@@ -22,10 +23,9 @@ function DoctorDashboard() {
   const [appointments, setAppointments] = useState([]);
   const [upcomingAppointment, setUpcomingAppointment] = useState(null);
   const [recentPatientVisit, setRecentPatientVisit] = useState(null);
-  const [notifications, setNotifications] = useState([]);
 
   const doctorId = sessionStorage.getItem("doctorID");
-  const doctorName = sessionStorage.getItem("doctorName") || "Doctor";
+  const doctorName = sessionStorage.getItem("username") || "Doctor";
   const token = sessionStorage.getItem("token");
 
   const STATUS_NAMES = {
@@ -58,12 +58,12 @@ function DoctorDashboard() {
 
           const now = new Date();
           const futureAppointments = appts.filter(
-            (appt) => new Date(appt.AppointmentDateTime) > now
+            (appt) => new Date(appt.appointmentDateTime) > now
           );
           const nextAppointment =
             futureAppointments.length > 0
               ? futureAppointments.reduce((a, b) =>
-                  new Date(a.AppointmentDateTime) < new Date(b.AppointmentDateTime)
+                  new Date(a.appointmentDateTime) < new Date(b.appointmentDateTime)
                     ? a
                     : b
                 )
@@ -72,15 +72,15 @@ function DoctorDashboard() {
 
           const pastCompleted = appts.filter(
             (appt) =>
-              new Date(appt.AppointmentDateTime) < now &&
-              appt.Status &&
-              typeof appt.Status.StatusName === "string" &&
-              appt.Status.StatusName.toLowerCase() === "completed"
+              new Date(appt.appointmentDateTime) < now &&
+              appt.status &&
+              typeof appt.status.statusName === "string" &&
+              appt.status.statusName.toLowerCase() === "completed"
           );
           const lastPatientVisit =
             pastCompleted.length > 0
               ? pastCompleted.reduce((a, b) =>
-                  new Date(a.AppointmentDateTime) > new Date(b.AppointmentDateTime)
+                  new Date(a.appointmentDateTime) > new Date(b.appointmentDateTime)
                     ? a
                     : b
                 )
@@ -97,96 +97,55 @@ function DoctorDashboard() {
     }
   }, [doctorId, token, location.state?.reloadAppointments, navigate]);
 
-  useEffect(() => {
-    // Example notifications - in real app, fetch from API
-    setNotifications([
-      { id: 1, message: "New lab results available for patient John Doe." },
-      { id: 2, message: "Appointment reminder: Jane Smith tomorrow at 9:00 AM." },
-    ]);
-  }, []);
-
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
-      {/* Sidebar for Desktop */}
-      <nav className="admin-sidebar d-flex flex-column p-3">
-        <h3 className="mb-4">AmazeCare Doctor</h3>
-        <ul className="nav flex-column">
-          <li className="nav-item mb-2">
-            <Link to="/doctor-dashboard" className="nav-link active">
-              <FaHome className="me-2" /> Overview
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/doctor/patients" className="nav-link">
-              <FaUserInjured className="me-2" /> Patients
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/doctor/appointments" className="nav-link">
-              <FaCalendarAlt className="me-2" /> Appointments
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/doctor/medical-notes" className="nav-link">
-              <FaNotesMedical className="me-2" /> Medical Notes
-            </Link>
-          </li>
-          <li className="nav-item mb-2">
-            <Link to="/doctor/records" className="nav-link">
-              <FaFileMedicalAlt className="me-2" /> Medical Records
-            </Link>
-          </li>
-        </ul>
-      </nav>
-      
-      {/* Navbar for Mobile */}
-      <Navbar bg="light" expand="md" className="shadow-sm d-md-none">
-        <Navbar.Brand>AmazeCare</Navbar.Brand>
-        <Navbar.Toggle aria-controls="doctor-sidebar" />
-        <Navbar.Offcanvas id="doctor-sidebar" placement="start">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Menu</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <ul className="nav flex-column">
-              <li className="nav-item mb-2">
-                <Link to="/doctor-dashboard" className="nav-link">
-                  <FaHome className="me-2" /> Overview
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/doctor/patients" className="nav-link">
-                  <FaUserInjured className="me-2" /> Patients
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/doctor/appointments" className="nav-link">
-                  <FaCalendarAlt className="me-2" /> Appointments
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/doctor/medical-notes" className="nav-link">
-                  <FaNotesMedical className="me-2" /> Medical Notes
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/doctor/records" className="nav-link">
-                  <FaFileMedicalAlt className="me-2" /> Medical Records
-                </Link>
-              </li>
-            </ul>
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
-      </Navbar>
+<nav className="admin-sidebar d-flex flex-column p-3">
+  <h3 className="mb-4">AmazeCare Doctor</h3>
+  <ul className="nav flex-column">
+    <li className="nav-item mb-2">
+      <Link to="/doctor-dashboard" className="nav-link active">
+        <FaHome className="me-2" /> Overview
+      </Link>
+    </li>
+    <li className="nav-item mb-2">
+      <Link to="/doctor/patients" className="nav-link">
+        <FaUserInjured className="me-2" /> Patients
+      </Link>
+    </li>
+    <li className="nav-item mb-2">
+      <Link to="/doctor/appointments" className="nav-link">
+        <FaCalendarAlt className="me-2" /> Appointments
+      </Link>
+    </li>
+    <li className="nav-item mb-2">
+  <Link to="/doctor/records" className="nav-link">
+    <FaNotesMedical className="me-2" /> Medical Records
+  </Link>
+</li>
+<li className="nav-item mb-2">
+  <Link to="/doctor/prescriptions" className="nav-link">
+    <FaPrescriptionBottleAlt className="me-2" /> Prescriptions
+  </Link>
+</li>
+<li className="nav-item mb-2">
+  <Link to="/doctor/tests" className="nav-link">
+    <FaVials className="me-2" /> Tests
+  </Link>
+</li>
+  </ul>
+</nav>
+
 
       {/* Main Content */}
       <div className="flex-grow-1 d-flex flex-column">
         <Navbar bg="light" className="shadow-sm px-3 px-md-4 py-3 d-none d-md-flex doctor-navbar">
           <Navbar.Brand className="fw-bold">Overview</Navbar.Brand>
           <div className="ms-auto d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
             <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
-            <button className="btn btn-outline-danger d-flex align-items-center gap-2" onClick={handleLogout}>
+            <button
+              className="btn btn-outline-danger d-flex align-items-center gap-2"
+              onClick={handleLogout}
+            >
               Logout
             </button>
           </div>
@@ -207,8 +166,8 @@ function DoctorDashboard() {
                   <Card.Title>Next Appointment</Card.Title>
                   <Card.Text>
                     {upcomingAppointment
-                      ? `${upcomingAppointment.Patient?.Name || "N/A"} - ${new Date(
-                          upcomingAppointment.AppointmentDateTime
+                      ? `${upcomingAppointment.patient?.fullName || "N/A"} - ${new Date(
+                          upcomingAppointment.appointmentDateTime
                         ).toLocaleDateString()}`
                       : "No upcoming appointments"}
                   </Card.Text>
@@ -223,8 +182,8 @@ function DoctorDashboard() {
                   <Card.Title>Recent Patient Visit</Card.Title>
                   <Card.Text>
                     {recentPatientVisit
-                      ? `${new Date(recentPatientVisit.AppointmentDateTime).toLocaleDateString()} - ${
-                          recentPatientVisit.VisitReason || "N/A"
+                      ? `${new Date(recentPatientVisit.appointmentDateTime).toLocaleDateString()} - ${
+                          recentPatientVisit.visitReason || "N/A"
                         }`
                       : "No recent patient visits"}
                   </Card.Text>
@@ -232,22 +191,6 @@ function DoctorDashboard() {
               </Card>
             </Col>
           </Row>
-
-          {/* Notifications */}
-          <section className="mb-4">
-            <h4>Notifications</h4>
-            {notifications.length === 0 ? (
-              <p>No notifications available</p>
-            ) : (
-              <ul className="list-group">
-                {notifications.map((note) => (
-                  <li key={note.id} className="list-group-item">
-                    {note.message}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
 
           {/* Appointments Table */}
           <section>
@@ -274,19 +217,19 @@ function DoctorDashboard() {
                         </tr>
                       ) : (
                         appointments.map((appt, index) => {
-                          const date = appt.AppointmentDateTime
-                            ? new Date(appt.AppointmentDateTime).toLocaleDateString()
+                          const date = appt.appointmentDateTime
+                            ? new Date(appt.appointmentDateTime).toLocaleDateString()
                             : "N/A";
-                          const time = appt.AppointmentDateTime
-                            ? new Date(appt.AppointmentDateTime).toLocaleTimeString([], {
+                          const time = appt.appointmentDateTime
+                            ? new Date(appt.appointmentDateTime).toLocaleTimeString([], {
                                 hour: "2-digit",
                                 minute: "2-digit",
                               })
                             : "N/A";
 
-                          const patientName = appt.Patient?.Name || "N/A";
+                          const patientName = appt.patient?.fullName || "N/A";
                           const statusName =
-                            STATUS_NAMES[appt.StatusID] || appt.Status?.StatusName || "Unknown";
+                            STATUS_NAMES[appt.statusID] || appt.status?.statusName || "Unknown";
 
                           let badgeClass = "bg-secondary";
                           switch (statusName.toLowerCase()) {
@@ -310,13 +253,13 @@ function DoctorDashboard() {
                           }
 
                           return (
-                            <tr key={appt.AppointmentID || index}>
-                              <td>{appt.AppointmentID}</td>
+                            <tr key={appt.appointmentID || index}>
+                              <td>{appt.appointmentID}</td>
                               <td>{date}</td>
                               <td>{time}</td>
                               <td>{patientName}</td>
-                              <td>{appt.VisitReason || "N/A"}</td>
-                              <td>{appt.Symptoms || "N/A"}</td>
+                              <td>{appt.visitReason || "N/A"}</td>
+                              <td>{appt.symptoms || "N/A"}</td>
                               <td>
                                 <span className={`badge ${badgeClass}`}>{statusName}</span>
                               </td>
