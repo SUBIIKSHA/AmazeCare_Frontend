@@ -9,8 +9,10 @@ import { Link, useNavigate } from "react-router-dom";import {
   FaVials,
   FaCreditCard,
   FaUserCircle,
-  FaEdit,FaTrash,
+  FaEdit,FaTrash,FaBell
 } from "react-icons/fa";
+import "./DoctorDashboard.css";
+
 
 const DoctorRecords = () => {
       const navigate = useNavigate();
@@ -194,6 +196,7 @@ const DoctorRecords = () => {
     <div className="d-flex justify-content-between align-items-center mb-2">
       <h2>My Medical Records</h2>
       <div className="d-flex align-items-center gap-3">
+        <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
         <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
         <button className="btn btn-outline-danger d-flex align-items-center gap-2" onClick={handleLogout}>
           Logout
@@ -283,7 +286,7 @@ const DoctorRecords = () => {
 
         <div className="medical-record-list">
           {loading && <p>Loading records...</p>}
-          <table className="table table-striped">
+          <table className="table appointments-table">
             <thead>
               <tr>
                 <th>ID</th>

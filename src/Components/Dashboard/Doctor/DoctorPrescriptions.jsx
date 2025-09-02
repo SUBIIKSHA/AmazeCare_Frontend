@@ -9,8 +9,9 @@ import {
   FaPrescriptionBottleAlt,
   FaVials,
   FaCreditCard,
-  FaUserCircle,
+  FaUserCircle,FaBell
 } from "react-icons/fa";
+import "./DoctorDashboard.css";
 
 const patternOptions = [
   { id: 1, code: "1-0-0", timing: "BF" },
@@ -56,12 +57,8 @@ const DoctorPrescriptions = () => {
 
     const allPrescriptions = presRes.data?.["$values"] || presRes.data || [];
     const allRecords = recRes.data?.["$values"] || recRes.data || [];
-
-    // Filter records by logged-in doctor
     const doctorRecords = allRecords.filter((r) => r.doctorID && r.doctorID.toString() === doctorId.toString());
     const doctorRecordIDs = doctorRecords.map((r) => r.recordID);
-
-    // Filter prescriptions linked to doctor's medical records
     const doctorPrescriptions = allPrescriptions.filter((p) => doctorRecordIDs.includes(p.recordID));
 
     setPrescriptions(doctorPrescriptions);
@@ -189,6 +186,7 @@ const DoctorPrescriptions = () => {
           <header className="d-flex justify-content-between align-items-center mb-4">
             <h2>Prescriptions</h2>
             <div className="d-flex align-items-center gap-3">
+              <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
               <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
               <button className="btn btn-outline-danger" disabled={loading} onClick={logout}>
                 Logout
@@ -288,7 +286,7 @@ const DoctorPrescriptions = () => {
 
         <div className="prescription-list">
           {loading && <p>Loading prescriptions...</p>}
-          <table className="table table-striped">
+          <table className="table appointments-table">
             <thead>
               <tr>
                 <th>ID</th>

@@ -1,5 +1,3 @@
-// DoctorPatients.jsx
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -11,8 +9,11 @@ import {
   FaVials,
   FaCreditCard,
   FaUserCircle,
+  FaBell
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import "./DoctorDashboard.css";
+
 
 function DoctorPatients() {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function DoctorPatients() {
       })
       .then((res) => {
         const list = res.data?.["$values"] || res.data || [];
+        console.log(list);
         setPatients(list);
         setLoading(false);
       })
@@ -60,7 +62,7 @@ function DoctorPatients() {
         {
           fullName: searchTerm,
           doctorID: Number(doctorId),
-          statusIds: [1], // active patients only
+          statusIds: [1], 
           pageNumber: 1,
           pageSize: 100,
         },
@@ -68,6 +70,7 @@ function DoctorPatients() {
       )
       .then((res) => {
         const list = res.data?.patients?.["$values"] || res.data?.patients || [];
+        console.log(list);
         setPatients(list);
         setLoading(false);
       })
@@ -91,7 +94,6 @@ function DoctorPatients() {
 
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
-      {/* Sidebar for Desktop */}
       <nav className="admin-sidebar d-flex flex-column p-3">
         <h3 className="mb-4">AmazeCare Doctor</h3>
         <ul className="nav flex-column">
@@ -128,11 +130,11 @@ function DoctorPatients() {
         </ul>
       </nav>
 
-      {/* Main Content */}
       <div className="admin-main-content flex-grow-1 p-4 overflow-auto">
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>My Patients</h2>
           <div className="d-flex align-items-center gap-3">
+            <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
             <FaUserCircle
               size={24}
               className="text-secondary cursor-pointer"
@@ -147,7 +149,6 @@ function DoctorPatients() {
           </div>
         </header>
 
-        {/* Search Section */}
         <div className="d-flex align-items-center mb-3 gap-2 flex-wrap">
           <input
             type="text"
@@ -165,16 +166,13 @@ function DoctorPatients() {
             Clear
           </button>
         </div>
-
-        {/* Feedback */}
         {feedback && (
           <div className={`alert ${feedback.type === "success" ? "alert-success" : "alert-danger"}`}>
             {feedback.message}
           </div>
         )}
 
-        {/* Patients Table */}
-        <table className="table table-striped">
+          <table className="table appointments-table">
           <thead style={{ backgroundColor: "#cce2ff", color: "#0049b7" }}>
             <tr>
               <th>ID</th>

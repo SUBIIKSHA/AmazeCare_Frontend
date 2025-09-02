@@ -9,8 +9,10 @@ import {
   FaCalendarAlt,
   FaNotesMedical,
   FaPrescriptionBottleAlt,
-  FaCreditCard,
+  FaCreditCard,FaBell
 } from "react-icons/fa";
+import "./DoctorDashboard.css";
+
 
 const masterTests = [
   { testID: 1, testName: "Blood Test", price: 300.0, instructions: "Fasting recommended for accurate results" },
@@ -35,7 +37,6 @@ const DoctorTests = () => {
   const token = sessionStorage.getItem("token");
   const doctorId = sessionStorage.getItem("doctorID");
 
-  // Fetch recommended tests + related prescriptions + medical records for filtering
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -49,17 +50,13 @@ const DoctorTests = () => {
       const allPrescriptions = presRes.data?.["$values"] || presRes.data || [];
       const allRecords = recRes.data?.["$values"] || recRes.data || [];
 
-      // Filter records by logged-in doctor
       const doctorRecords = allRecords.filter(
         (r) => r.doctorID && r.doctorID.toString() === doctorId.toString()
       );
       const doctorRecordIDs = doctorRecords.map((r) => r.recordID);
-
-      // Filter prescriptions linked to doctor's medical records
       const doctorPrescriptions = allPrescriptions.filter((p) => doctorRecordIDs.includes(p.recordID));
       const doctorPrescriptionIDs = doctorPrescriptions.map((p) => p.prescriptionID);
 
-      // Filter recommended tests linked to doctor's prescriptions
       const doctorRecTests = allRecommendedTests.filter((rt) =>
         doctorPrescriptionIDs.includes(rt.prescriptionID)
       );
@@ -157,6 +154,8 @@ const DoctorTests = () => {
         <header className="d-flex justify-content-between align-items-center mb-3">
           <h2>Tests</h2>
           <div className="d-flex align-items-center gap-3">
+                    <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
+            
             <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
             <button className="btn btn-outline-danger" onClick={logout} disabled={loading}>
               Logout
@@ -231,14 +230,13 @@ const DoctorTests = () => {
         )}
 
 
-        <table className="table table-striped">
+          <table className="table appointments-table">
           <thead>
             <tr>
               <th>ID</th>
               <th>Prescription ID</th>
               <th>Test ID</th>
               <th>Test Name</th>
-              <th>Price</th>
               <th>Instructions</th>
             </tr>
           </thead>
@@ -256,7 +254,6 @@ const DoctorTests = () => {
                     <td>{rt.prescriptionID}</td>
                     <td>{rt.testID}</td>
                     <td>{details.testName || rt.testName}</td>
-                    <td>{details.price}</td>
                     <td>{details.instructions}</td>
                   </tr>
                 );

@@ -10,8 +10,11 @@ import {
   FaVials,
   FaCreditCard,
   FaUserCircle,
+  FaBell
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import "./DoctorDashboard.css";
+
 
 function DoctorAppointments() {
   const navigate = useNavigate();
@@ -176,6 +179,22 @@ function DoctorAppointments() {
         setLoading(false);
       });
   };
+      const getBadgeClass = (statusName) => {
+        switch (statusName?.toLowerCase()) {
+          case "pending":
+            return "bg-warning text-dark";
+          case "scheduled":
+            return "bg-info text-dark";
+          case "completed":
+            return "bg-success text-light";
+          case "cancelled":
+            return "bg-secondary text-light";
+          case "rejected":
+            return "bg-danger text-light";
+          default:
+            return "bg-secondary text-light";
+        }
+      };
 
   const logout = () => {
     sessionStorage.clear();
@@ -225,6 +244,7 @@ function DoctorAppointments() {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Appointments</h2>
           <div className="d-flex align-items-center gap-3">
+            <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
             <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
             <button className="btn btn-outline-danger" disabled={loading} onClick={logout}>
               Logout
@@ -235,7 +255,7 @@ function DoctorAppointments() {
         <div className="d-flex align-items-center mb-3 gap-2 flex-wrap">
           <input
             type="text"
-            placeholder="Search by patient or doctor..."
+            placeholder="Search by patient..."
             value={searchTerm}
             onChange={handleSearchChange}
             disabled={loading}
@@ -272,7 +292,7 @@ function DoctorAppointments() {
 
         {loading && <p>Loading appointments...</p>}
 
-        <table className="table table-striped">
+          <table className="table appointments-table">
           <thead style={{ backgroundColor: "#0049b7", color: "white" }}>
             <tr>
               <th>ID</th>
@@ -297,10 +317,14 @@ function DoctorAppointments() {
                   <td>{appt.visitReason}</td>
                   <td>{appt.appointmentDateTime ? new Date(appt.appointmentDateTime).toLocaleDateString() : ""}</td>
                   <td>{appt.appointmentDateTime ? new Date(appt.appointmentDateTime).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : ""}</td>
-                  <td>{getStatusName(appt.statusID) || appt.status}</td>
+                  <td>
+                  <span className={`badge ${getBadgeClass(getStatusName(appt.statusID) || appt.status)}`}>
+                    {getStatusName(appt.statusID) || appt.status}
+                  </span>
+                </td>
                   <td>
                     {(appt.statusID === 1) && (
-                        <DropdownButton id={`actions-dropdown-${appt.appointmentID}`}  variant="secondary" size="sm">
+                        <DropdownButton id={`actions-dropdown-${appt.appointmentID}`}  variant="secondary" size="sm"align="end"renderMenuOnMount={true} >
                         <Dropdown.Item onClick={() => approve(appt.appointmentID)}>Approve</Dropdown.Item>
                         <Dropdown.Item onClick={() => reject(appt.appointmentID)}>Reject</Dropdown.Item>
                         <Dropdown.Item onClick={() => handleRescheduleClick(appt)}>Reschedule</Dropdown.Item>
@@ -308,7 +332,7 @@ function DoctorAppointments() {
                         </DropdownButton>
                     )}
                     {(appt.statusID === 2) && (
-                        <DropdownButton id={`actions-dropdown-${appt.appointmentID}`}  variant="secondary" size="sm">
+                        <DropdownButton id={`actions-dropdown-${appt.appointmentID}`}  variant="secondary" size="sm" renderMenuOnMount={true}>
                         <Dropdown.Item onClick={() => complete(appt.appointmentID)}>Complete</Dropdown.Item>
                         <Dropdown.Item onClick={() => handleRescheduleClick(appt)}>Reschedule</Dropdown.Item>
                         <Dropdown.Item onClick={() => cancel(appt.appointmentID)}>Cancel</Dropdown.Item>
