@@ -24,6 +24,10 @@ const AdminDashboard = () => {
   });
   const [recentAppointments, setRecentAppointments] = useState([]);
   const token = sessionStorage.getItem("token");
+  const goToProfile = () => {
+    navigate("/profile");
+  };
+
 
   useEffect(() => {
     Promise.all([
@@ -110,7 +114,7 @@ const AdminDashboard = () => {
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/admin/settings" className="nav-link">
+            <Link to="/admin/profile" className="nav-link">
               <FaCog className="me-2" /> Settings
             </Link>
           </li>
@@ -128,9 +132,12 @@ const AdminDashboard = () => {
         </div>
 
         <div className="d-flex align-items-center gap-4">
-          <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
-          <FaUserCircle size={24} className="icon-hover text-secondary" title="Profile" />
-          <button className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 px-3 py-1 flex-shrink-0" onClick={() => navigate("/login")}>
+          <FaUserCircle
+            size={24}
+            className="text-secondary cursor-pointer"
+            title="Profile"
+            onClick={goToProfile}
+          />          <button className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 px-3 py-1 flex-shrink-0" onClick={() => navigate("/login")}>
             <FaSignOutAlt /> Logout
           </button>
         </div>
@@ -231,7 +238,7 @@ const AdminDashboard = () => {
             <div className="card-body">
               <h5 className="card-title text-center">Recent Appointments</h5>
               <div className="table-responsive">
-                <table className="table table-striped table-hover mb-0">
+            <table className="table appointments-table">
                   <thead className="color-table">
                     <tr>
                       <th>ID</th>

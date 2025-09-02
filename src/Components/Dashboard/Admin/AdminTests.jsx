@@ -127,8 +127,7 @@ const cancelAdd = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Tests</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")}/>
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               disabled={loading}
@@ -194,7 +193,7 @@ const cancelAdd = () => {
           </form>
         )}
 
-        <table className="table table-striped">
+            <table className="table appointments-table">
           <thead>
             <tr>
               <th>Recommended Test ID</th>

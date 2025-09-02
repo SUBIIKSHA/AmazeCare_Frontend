@@ -263,8 +263,7 @@ const AdminAppointments = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Appointments</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")} />
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               disabled={loading}
@@ -319,7 +318,7 @@ const AdminAppointments = () => {
         <div className="appointment-list" >
           {loading && <p>Loading appointments...</p>}
           <div style={{ overflowX: "auto", width: "100%"}}>
-          <table className="table table-striped" style={{ minWidth: "900px" }}>
+           <table className="table appointments-table" style={{ minWidth: "900px" }}>
             <thead style={{ backgroundColor: "blue", color: "white" }}>
               <tr>
                 <th>ID</th>

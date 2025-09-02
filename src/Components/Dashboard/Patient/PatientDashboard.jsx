@@ -17,6 +17,7 @@ import {
   FaBell,
   FaUserCircle,
 } from "react-icons/fa";
+import Logo from '../../../Images/Logo.png';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./PatientDashboard.css";
 
@@ -28,7 +29,6 @@ function PatientDashboard() {
   const [upcomingAppointment, setUpcomingAppointment] = useState(null);
   const [lastVisit, setLastVisit] = useState(null);
 
-  // Booking form toggle and data
   const [showBookingPanel, setShowBookingPanel] = useState(false);
   const [bookingData, setBookingData] = useState({
     doctorID: "",
@@ -38,7 +38,6 @@ function PatientDashboard() {
     visitReason: "",
   });
 
-  // Doctors list
   const [allDoctors, setAllDoctors] = useState([]);
 
   const patientId = sessionStorage.getItem("patientID");
@@ -48,6 +47,9 @@ function PatientDashboard() {
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/login");
+  };
+   const goToProfile = () => {
+    navigate("/profile");
   };
 
   const STATUS_NAMES = {
@@ -191,8 +193,10 @@ function PatientDashboard() {
 
   return (
     <div className="admin-dashboard-wrapper d-flex flex-column flex-md-row vh-100">
-      {/* Sidebar for Desktop */}
       <nav className="admin-sidebar p-3 flex-shrink-0 d-none d-md-block">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Patient</h3>
         <ul className="nav flex-column">
           <li className="nav-item mb-2">
@@ -223,53 +227,16 @@ function PatientDashboard() {
         </ul>
       </nav>
 
-      {/* Navbar for Mobile */}
-      <Navbar bg="light" expand="md" className="shadow-sm d-md-none">
-        <Navbar.Brand>AmazeCare</Navbar.Brand>
-        <Navbar.Toggle aria-controls="patient-sidebar" />
-        <Navbar.Offcanvas id="patient-sidebar" placement="start">
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Menu</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            <ul className="nav flex-column">
-              <li className="nav-item mb-2">
-                <Link to="/patient-dashboard" className="nav-link">
-                  <FaHome className="me-2" /> Overview
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/patient/doctors" className="nav-link">
-                  <FaUserMd className="me-2" /> Doctors
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/patient/records" className="nav-link">
-                  <FaFileMedical className="me-2" /> Medical Records
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/patient/prescriptions" className="nav-link">
-                  <FaPrescriptionBottleAlt className="me-2" /> Prescriptions
-                </Link>
-              </li>
-              <li className="nav-item mb-2">
-                <Link to="/patient/billings" className="nav-link">
-                  <FaCreditCard className="me-2" /> Billing
-                </Link>
-              </li>
-            </ul>
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
-      </Navbar>
-
-      {/* Main Content */}
       <div className="flex-grow-1 d-flex flex-column">
         <Navbar bg="light" className="shadow-sm px-3 px-md-4 py-3 d-none d-md-flex admin-navbar">
           <Navbar.Brand className="fw-bold">Overview</Navbar.Brand>
           <div className="ms-auto d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle
+              size={24}
+              className="text-secondary cursor-pointer"
+              title="Profile"
+              onClick={goToProfile}
+            />
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               onClick={handleLogout}
@@ -279,8 +246,7 @@ function PatientDashboard() {
           </div>
         </Navbar>
 
-        <main className="admin-main-content flex-grow-1 p-3 p-md-4 overflow-auto">
-          {/* Welcome + Button */}
+        <main className="patient-main-content flex-grow-1 p-3 p-md-4 overflow-auto">
           <div className="d-flex align-items-center mb-4 justify-content-between flex-wrap gap-3">
             <h2 className="mb-0">Welcome, {username}</h2>
             <button
@@ -292,9 +258,8 @@ function PatientDashboard() {
             </button>
           </div>
 
-          {/* Booking Panel */}
           {showBookingPanel && (
-            <div className="booking-panel">
+            <div className="booking-panel p-4 rounded" style={{ maxWidth: '500px', margin: '20px auto' }}>
               <h3>Book Appointment</h3>
               <form onSubmit={handleBookingSubmit}>
                 <div className="mb-3">
@@ -366,12 +331,11 @@ function PatientDashboard() {
             </div>
           )}
 
-          {/* Dashboard Cards */}
           <Row className="dashboard-cards g-3 mb-4">
             <Col xs={12} md={4}>
-              <Card className="h-100 shadow-sm text-center">
+              <Card className="h-100 shadow-sm text-center gradient-card card-next-appointment">
                 <Card.Body>
-                  <FaCalendarAlt size={20} className="mb-3 text-primary" />
+                  <FaCalendarAlt size={20} className="mb-3 icon-white" />
                   <Card.Title>Upcoming Appointment</Card.Title>
                   <Card.Text>
                     {upcomingAppointment
@@ -385,9 +349,9 @@ function PatientDashboard() {
             </Col>
 
             <Col xs={12} md={4}>
-              <Card className="h-100 shadow-sm text-center">
+              <Card className="h-100 shadow-sm text-center gradient-card card-recent-visit">
                 <Card.Body>
-                  <FaFileMedical size={20} className="mb-3 text-primary" />
+                  <FaFileMedical size={20} className="mb-3 icon-white" />
                   <Card.Title>Last Visit</Card.Title>
                   <Card.Text>
                     {lastVisit
@@ -401,13 +365,12 @@ function PatientDashboard() {
             </Col>
           </Row>
 
-          {/* Appointments Table */}
           <section>
             <Card className="shadow-sm">
               <Card.Body>
                 <Card.Title>Appointments</Card.Title>
                 <div className="table-responsive mt-3">
-                  <table className="table table-striped">
+            <table className="table appointments-table">
                     <thead className="color-table">
                       <tr>
                         <th>ID</th>

@@ -12,6 +12,7 @@ import {
   FaCreditCard,FaBell
 } from "react-icons/fa";
 import "./DoctorDashboard.css";
+import Logo from '../../../Images/Logo.png';
 
 
 const masterTests = [
@@ -115,6 +116,9 @@ const DoctorTests = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
             <nav className="admin-sidebar d-flex flex-column p-3">
+              <div className="sidebar-logo">
+              <img src={Logo} alt="Logo" />
+            </div>
               <h3 className="mb-4">AmazeCare Doctor</h3>
               <ul className="nav flex-column">
                 <li className="nav-item mb-2">
@@ -153,10 +157,8 @@ const DoctorTests = () => {
       <main className="admin-main-content flex-grow-1 p-4 overflow-auto">
         <header className="d-flex justify-content-between align-items-center mb-3">
           <h2>Tests</h2>
-          <div className="d-flex align-items-center gap-3">
-                    <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
-            
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+          <div className="d-flex align-items-center gap-3">            
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")}/>
             <button className="btn btn-outline-danger" onClick={logout} disabled={loading}>
               Logout
             </button>

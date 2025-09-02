@@ -314,8 +314,7 @@ const AdminPatients = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Patients</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")}/>
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               disabled={loading}
@@ -547,7 +546,7 @@ const AdminPatients = () => {
 
         <div className="patient-list">
           {loading && <p>Loading patients...</p>}
-          <table className="table table-striped">
+            <table className="table appointments-table">
             <thead style={{ backgroundColor: "blue", color: "white" }}>
               <tr>
                 <th>ID</th>

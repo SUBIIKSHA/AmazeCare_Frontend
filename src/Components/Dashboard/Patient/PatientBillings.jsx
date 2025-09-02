@@ -10,6 +10,7 @@ import {
   FaUserCircle,
   FaSignOutAlt,
 } from "react-icons/fa";
+import Logo from '../../../Images/Logo.png';
 import { Link, useNavigate } from "react-router-dom";
 import "./PatientDashboard.css";
 
@@ -57,6 +58,9 @@ const PatientBillings = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100">
       <nav className="admin-sidebar d-flex flex-column p-3">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Patient</h3>
         <ul className="nav flex-column">
           <li className="nav-item mb-2">
@@ -96,8 +100,7 @@ const PatientBillings = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Billing</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")}/>
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               onClick={() => {
@@ -120,7 +123,7 @@ const PatientBillings = () => {
           <div>Loading billing information...</div>
         ) : (
           <div style={{ overflowX: "auto", width: "100%" }}>
-            <table className="table table-striped" style={{ minWidth: "800px", width: "100%" }}>
+              <table className="table appointments-table" style={{ minWidth: "800px", width: "100%" }}>
               <thead style={{ backgroundColor: "blue", color: "white" }}>
                 <tr>
                   <th style={{ whiteSpace: "nowrap" }}>Billing ID</th>

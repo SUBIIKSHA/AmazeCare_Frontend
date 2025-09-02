@@ -13,6 +13,8 @@ import {
 } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import "./PatientDashboard.css";
+import Logo from '../../../Images/Logo.png';
+
 
 const specializationMap = {
   1: "Cardiology",
@@ -31,12 +33,9 @@ const PatientDoctors = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
-
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
 
-  // Booking form state
   const [showBookingPanel, setShowBookingPanel] = useState(false);
   const [bookingData, setBookingData] = useState({
     doctorID: "",
@@ -60,7 +59,7 @@ const PatientDoctors = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        const allDoctors = res.data?.["$values"] || [];
+        const allDoctors = res.data?.["$values"] || res.data ||[];
         const activeDoctors = allDoctors.filter((doc) => Number(doc.statusID) !== 2);
         setDoctors(activeDoctors);
         setLoading(false);
@@ -88,7 +87,7 @@ const PatientDoctors = () => {
       sort: 0,
       pageNumber: 1,
       pageSize: 100,
-      statusIds: [1], // active only
+      statusIds: [1], 
     };
 
     axios
@@ -96,7 +95,8 @@ const PatientDoctors = () => {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
-        const allDoctors = res.data?.doctors?.["$values"] || [];
+        const allDoctors = res.data?.doctors?.["$values"] || res.data?.doctors || [];
+        console.log(allDoctors)
         const activeDoctors = allDoctors.filter((doc) => Number(doc.statusID) !== 2);
         setDoctors(activeDoctors);
         setLoading(false);
@@ -184,6 +184,9 @@ const PatientDoctors = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100">
       <nav className="admin-sidebar d-flex flex-column p-3">
+        <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
         <h3 className="mb-4">AmazeCare Patient</h3>
         <ul className="nav flex-column">
           <li className="nav-item mb-2">
@@ -223,8 +226,7 @@ const PatientDoctors = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Doctors</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")}/>
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               disabled={loading}
@@ -354,7 +356,7 @@ const PatientDoctors = () => {
           </div>
         )}
 
-        <table className="table table-striped">
+            <table className="table appointments-table">
           <thead style={{ backgroundColor: "blue", color: "white" }}>
             <tr>
               <th>ID</th>
@@ -374,7 +376,7 @@ const PatientDoctors = () => {
                 <tr key={doc.doctorID}>
                   <td>{doc.doctorID}</td>
                   <td>{doc.name}</td>
-                  <td>{specializationMap[doc.specializationID] || doc.specializationID}</td>
+                  <td>{specializationMap[doc.specializationID] || doc.specializationID || doc.specializationName}</td>
                   <td>{doc.experience}</td>
                   <td>{doc.designation}</td>
                 </tr>

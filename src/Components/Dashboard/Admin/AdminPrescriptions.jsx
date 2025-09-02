@@ -162,7 +162,6 @@ const AdminPrescriptions = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Prescriptions</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
             <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
@@ -265,7 +264,7 @@ const AdminPrescriptions = () => {
 
         <div className="prescription-list">
           {loading && <p>Loading prescriptions...</p>}
-          <table className="table table-striped">
+            <table className="table appointments-table">
             <thead>
               <tr>
                 <th>ID</th>

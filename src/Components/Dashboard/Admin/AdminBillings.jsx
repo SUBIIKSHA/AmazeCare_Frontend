@@ -158,8 +158,7 @@ const AdminBillings = () => {
         <header className="d-flex justify-content-between align-items-center mb-4">
           <h2>Billing</h2>
           <div className="d-flex align-items-center gap-3">
-            <FaBell size={24} className="text-secondary cursor-pointer" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile"  onClick={() => navigate("/profile")}/>
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               disabled={loading}
@@ -276,7 +275,7 @@ const AdminBillings = () => {
 
         <div className="billing-list">
           {loading && <p>Loading billing records...</p>}
-          <table className="table table-striped">
+            <table className="table appointments-table">
             <thead>
               <tr>
                 <th>Billing ID</th>

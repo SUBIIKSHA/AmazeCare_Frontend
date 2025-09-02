@@ -14,6 +14,7 @@ import {
   FaBell,
   FaCreditCard,
 } from "react-icons/fa";
+import Logo from '../../../Images/Logo.png';
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import "./DoctorDashboard.css";
 
@@ -40,6 +41,9 @@ function DoctorDashboard() {
   const handleLogout = () => {
     sessionStorage.clear();
     navigate("/login");
+  };
+     const goToProfile = () => {
+    navigate("/profile");
   };
 
   useEffect(() => {
@@ -101,6 +105,9 @@ function DoctorDashboard() {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
         <nav className="admin-sidebar d-flex flex-column p-3">
+          <div className="sidebar-logo">
+          <img src={Logo} alt="Logo" />
+        </div>
           <h3 className="mb-4">AmazeCare Doctor</h3>
           <ul className="nav flex-column">
             <li className="nav-item mb-2">
@@ -139,10 +146,14 @@ function DoctorDashboard() {
 
       <div className="flex-grow-1 d-flex flex-column">
         <Navbar bg="light" className="shadow-sm px-3 px-md-4 py-3 d-none d-md-flex doctor-navbar">
-          <Navbar.Brand className="fw-bold">Overview</Navbar.Brand>
+<Navbar.Brand className="fw-bold ms-3 text-dark">Overview</Navbar.Brand>
           <div className="ms-auto d-flex align-items-center gap-3">
-          <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
-            <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+            <FaUserCircle
+            size={24}
+            className="text-secondary cursor-pointer"
+            title="Profile"
+            onClick={goToProfile}
+          />
             <button
               className="btn btn-outline-danger d-flex align-items-center gap-2"
               onClick={handleLogout}

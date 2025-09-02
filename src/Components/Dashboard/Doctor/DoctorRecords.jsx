@@ -12,7 +12,7 @@ import { Link, useNavigate } from "react-router-dom";import {
   FaEdit,FaTrash,FaBell
 } from "react-icons/fa";
 import "./DoctorDashboard.css";
-
+import Logo from '../../../Images/Logo.png';
 
 const DoctorRecords = () => {
       const navigate = useNavigate();
@@ -156,6 +156,9 @@ const DoctorRecords = () => {
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
     <nav className="admin-sidebar d-flex flex-column p-3">
+      <div className="sidebar-logo">
+      <img src={Logo} alt="Logo" />
+    </div>
       <h3 className="mb-4">AmazeCare Doctor</h3>
       <ul className="nav flex-column">
         <li className="nav-item mb-2">
@@ -196,8 +199,7 @@ const DoctorRecords = () => {
     <div className="d-flex justify-content-between align-items-center mb-2">
       <h2>My Medical Records</h2>
       <div className="d-flex align-items-center gap-3">
-        <FaBell size={22} className="icon-hover text-secondary" title="Notifications" />
-        <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" />
+        <FaUserCircle size={24} className="text-secondary cursor-pointer" title="Profile" onClick={() => navigate("/profile")}/>
         <button className="btn btn-outline-danger d-flex align-items-center gap-2" onClick={handleLogout}>
           Logout
         </button>
