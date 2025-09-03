@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
@@ -186,9 +187,12 @@ function PatientDashboard() {
           });
       })
       .catch((err) => {
-        console.error(err);
+      if (err.response && err.response.data && err.response.data.message) {
+        alert(err.response.data.message);
+      } else {
         alert("Failed to book appointment.");
-      });
+      }
+    });
   };
 
   return (

@@ -4,7 +4,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaUserMd, FaUsers, FaCalendarAlt, FaFileAlt, FaFileMedical,
-  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt,FaTimes,FaBars,FaCog
+  FaVial, FaMoneyBillWave, FaClock, FaBell, FaUserCircle, FaSignOutAlt, FaTimes, FaBars, FaCog
 } from "react-icons/fa";
 import React, { useState, useEffect } from "react";
 import Logo from '../../../Images/Logo.png';
@@ -26,8 +26,9 @@ const AdminDashboard = () => {
   const token = sessionStorage.getItem("token");
   const goToProfile = () => {
     navigate("/profile");
+    // Optionally close sidebar on profile click if on small screen
+    setSidebarOpen(false);
   };
-
 
   useEffect(() => {
     Promise.all([
@@ -85,65 +86,86 @@ const AdminDashboard = () => {
       });
   }, [token]);
 
+  // Optional: close sidebar on window resize >= 992 to avoid sidebar stuck open on desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 992 && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [sidebarOpen]);
+
   return (
     <div className="admin-dashboard-wrapper d-flex vh-100 text-center">
+
+      {/* Sidebar */}
       <nav className={`admin-sidebar p-3 ${sidebarOpen ? "open" : ""}`}>
         <div className="sidebar-logo">
           <img src={Logo} alt="Logo" />
         </div>
         <h3 className="mb-4">AmazeCare Admin</h3>
         <ul className="nav flex-column ">
-          <li className="nav-item mb-2 " >
-            <Link to="/admin-dashboard" className="nav-link active ">
+          <li className="nav-item mb-2" >
+            <Link to="/admin-dashboard" className="nav-link active" onClick={() => setSidebarOpen(false)}>
               <FaFileAlt className="me-2" /> Dashboard
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/admin/doctors" className="nav-link">
+            <Link to="/admin/doctors" className="nav-link" onClick={()=>setSidebarOpen(false)}>
               <FaUserMd className="me-2" /> Doctors
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/admin/patients" className="nav-link">
+            <Link to="/admin/patients" className="nav-link" onClick={()=>setSidebarOpen(false)}>
               <FaUsers className="me-2" /> Patients
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/admin/appointments" className="nav-link">
+            <Link to="/admin/appointments" className="nav-link" onClick={()=>setSidebarOpen(false)}>
               <FaCalendarAlt className="me-2" /> Appointments
             </Link>
           </li>
           <li className="nav-item mb-2">
-            <Link to="/admin/profile" className="nav-link">
+            <Link to="/admin/profile" className="nav-link" onClick={() => { setSidebarOpen(false); navigate("/admin/profile"); }}>
               <FaCog className="me-2" /> Settings
             </Link>
           </li>
         </ul>
       </nav>
 
+      {/* Main content */}
       <main className="admin-main-content flex-grow-1 p-4 overflow-auto">
         <header className="admin-header d-flex justify-content-between align-items-center mb-4 px-3 py-2">
-        <div className="d-flex align-items-center gap-3">
-          <button className="btn btn-light d-lg-none p-2 rounded-circle shadow-sm"
-                  onClick={() => setSidebarOpen(!sidebarOpen)}>
-            {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-          </button>
-          <h2 className="fw-bold m-0">Dashboard Overview</h2>
-        </div>
+          <div className="d-flex align-items-center gap-3">
+            {/* Sidebar Toggle Button on small screens */}
+            <button
+              className="btn btn-light d-lg-none p-2 rounded-circle shadow-sm"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}>
+              {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+            </button>
+            <h2 className="fw-bold m-0">Dashboard Overview</h2>
+          </div>
 
-        <div className="d-flex align-items-center gap-4">
-          <FaUserCircle
-            size={24}
-            className="text-secondary cursor-pointer"
-            title="Profile"
-            onClick={goToProfile}
-          />          <button className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 px-3 py-1 flex-shrink-0" onClick={() => navigate("/login")}>
-            <FaSignOutAlt /> Logout
-          </button>
-        </div>
-      </header>
+          <div className="d-flex align-items-center gap-4">
+            <FaUserCircle
+              size={24}
+              className="text-secondary cursor-pointer"
+              title="Profile"
+              onClick={goToProfile}
+            />
+            <button
+              className="btn btn-sm btn-outline-danger d-flex align-items-center gap-2 px-3 py-1 flex-shrink-0"
+              onClick={() => { setSidebarOpen(false); navigate("/login"); }}
+            >
+              <FaSignOutAlt /> Logout
+            </button>
+          </div>
+        </header>
 
-
+        {/* Dashboard cards */}
         <section className="dashboard-cards row g-4 mb-4">
           <div className="col-sm-6 col-lg-3">
             <div className="card h-100 shadow-sm text-center">
@@ -183,6 +205,7 @@ const AdminDashboard = () => {
           </div>
         </section>
 
+        {/* Other cards */}
         <section className="dashboard-cards row g-4 mb-4">
           <div className="col-md-4">
             <div className="card h-100 shadow-sm text-center">
@@ -190,7 +213,9 @@ const AdminDashboard = () => {
                 <FaFileAlt size={20} className="mb-3 text-primary" />
                 <h5 className="card-title">Recent Medical Records</h5>
                 <p className="card-text">{stats.recentMedicalRecords} new records</p>
-                <button className="btn btn-primary" onClick={() => navigate("/admin/records")}>View Records</button>
+                <button className="btn btn-primary" onClick={() => { setSidebarOpen(false); navigate("/admin/records"); }}>
+                  View Records
+                </button>
               </div>
             </div>
           </div>
@@ -200,7 +225,7 @@ const AdminDashboard = () => {
                 <FaFileMedical size={20} className="mb-3 text-primary" />
                 <h5 className="card-title">Prescriptions Issued</h5>
                 <p className="card-text">{stats.prescriptionsIssued} total</p>
-                <button className="btn btn-primary" onClick={() => navigate("/admin/prescriptions")}>
+                <button className="btn btn-primary" onClick={() => { setSidebarOpen(false); navigate("/admin/prescriptions"); }}>
                   View Prescriptions
                 </button>
               </div>
@@ -212,12 +237,15 @@ const AdminDashboard = () => {
                 <FaVial size={20} className="mb-3 text-primary" />
                 <h5 className="card-title">Tests</h5>
                 <p className="card-text">{stats.recommendedTests} total</p>
-                <button className="btn btn-primary" onClick={() => navigate("/admin/tests")}>View Tests</button>
+                <button className="btn btn-primary" onClick={() => { setSidebarOpen(false); navigate("/admin/tests"); }}>
+                  View Tests
+                </button>
               </div>
             </div>
           </div>
         </section>
 
+        {/* Billing Overview */}
         <section className="billing-overview mb-4">
           <div className="card shadow-sm">
             <div className="card-body d-flex flex-column flex-md-row justify-content-between align-items-center">
@@ -226,19 +254,20 @@ const AdminDashboard = () => {
                 <h5 className="card-title">Billing Overview</h5>
                 <p>Total Revenue: ${stats.totalRevenue.toLocaleString()}</p>
               </div>
-              <button className="btn btn-primary" onClick={() => navigate("/admin/billings")}>
+              <button className="btn btn-primary" onClick={() => { setSidebarOpen(false); navigate("/admin/billings"); }}>
                 View Billing
               </button>
             </div>
           </div>
         </section>
 
+        {/* Recent Appointments */}
         <section>
           <div className="card shadow-sm">
             <div className="card-body">
               <h5 className="card-title text-center">Recent Appointments</h5>
               <div className="table-responsive">
-            <table className="table appointments-table">
+                <table className="table appointments-table">
                   <thead className="color-table">
                     <tr>
                       <th>ID</th>
@@ -293,6 +322,7 @@ const AdminDashboard = () => {
             </div>
           </div>
         </section>
+
       </main>
     </div>
   );

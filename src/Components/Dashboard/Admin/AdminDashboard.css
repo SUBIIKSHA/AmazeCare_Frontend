@@ -16,15 +16,35 @@
   left: -240px;
   transition: left 0.3s ease;
   z-index: 1050;
-
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
+.admin-sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+.admin-sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
 .nav-link {
   display: flex;
   align-items: center;
-  justify-content: center; 
-  width: 100%; 
-  text-align: center; 
+  justify-content: flex-start;
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  white-space: nowrap; 
+  color: #e8f6f7;
+  font-weight: 600;
+  border-radius: 8px;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+  gap: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
 }
+
 .admin-sidebar.open {
   left: 0;
 }
@@ -34,6 +54,33 @@
     left: 0;
     position: relative;
   }
+  .admin-main-content {
+    margin-left: 240px;
+    padding: 2rem;
+  }
+}
+
+/* Responsive Sidebar for smaller screens */
+@media (max-width: 991.98px) {
+  .admin-sidebar {
+    position: fixed;
+    top: 0;
+    left: -240px;
+    height: 100vh;
+    width: 240px;
+    z-index: 9999;
+    transition: left 0.3s ease;
+    background: linear-gradient(180deg, #4b82d3, #06c0b8);
+    box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+    display: block;
+  }
+  .admin-sidebar.open {
+    left: 0 !important;
+  }
+  .admin-main-content {
+    margin-left: 0 !important; 
+    padding: 1rem;
+  }
 }
 
 .admin-sidebar h3 {
@@ -41,20 +88,6 @@
   margin-bottom: 2rem;
   text-align: center;
   letter-spacing: 1px;
-}
-
-.admin-sidebar .nav-link {
-  color: #e8f6f7;
-  font-weight: 600;
-  padding: 8px 14px;
-  border-radius: 8px;
-  margin-bottom: 6px;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 0.95rem;
-  text-align: center;
 }
 
 .admin-sidebar .nav-link:hover,
@@ -74,6 +107,8 @@
   width: 60px;
   height: 60px;
   border-radius: 50%;
+  max-width: 100%;
+  height: auto;
 }
 
 .admin-header {
@@ -81,13 +116,17 @@
   padding: 12px 20px;
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 .icon-hover {
   cursor: pointer;
   transition: color 0.2s ease;
 }
-
 .icon-hover:hover {
   color: #0d6efd;
 }
@@ -99,17 +138,20 @@
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
   margin-left: 0;
   transition: margin-left 0.3s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-
+/* Cards styling */
 .dashboard-cards .card {
   border-radius: 16px;
   border: none;
   background: #fff;
   box-shadow: 0 4px 12px rgba(0, 73, 183, 0.12);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  min-height: 160px;
+  text-align: center;
 }
-
 .dashboard-cards .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 8px 20px rgba(0, 73, 183, 0.2);
@@ -119,7 +161,6 @@
   color: #0049b7;
   font-weight: 700;
 }
-
 .card-text {
   color: #444;
   font-weight: 500;
@@ -130,33 +171,37 @@
   border: none;
   border-radius: 10px;
   font-weight: 600;
+  white-space: nowrap;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
 }
-
 .btn-primary:hover {
   background: linear-gradient(90deg, #06c0b8, #0049b7);
 }
 
+/* Table styles */
 .table thead {
   background-color: #0049b7;
   color: #fff;
 }
-
 .table-hover tbody tr:hover {
   background-color: rgba(0, 73, 183, 0.08);
 }
-
 .table td .badge {
   padding: 6px 10px;
   border-radius: 12px;
   font-weight: 600;
+  white-space: nowrap;
+  display: inline-block;
+  word-break: normal;
 }
 
+/* Status badge colors */
 .status-pending { background: #ffc107; color: #fff; }
 .status-completed { background: #28a745; color: #fff; }
 .status-cancelled { background: #dc3545; color: #fff; }
 .status-scheduled { background: #17a2b8; color: #fff; }
 .status-rejected { background: #6c757d; color: #fff; }
-
 
 /* Doctor Form */
 .doctor-form {
@@ -168,33 +213,29 @@
   margin: 20px auto;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
 .doctor-form:hover {
   transform: translateY(-4px);
   box-shadow: 0 10px 25px rgba(0, 73, 183, 0.15);
 }
-
 .doctor-form h3 {
   color: #0049b7;
   font-weight: 700;
   margin-bottom: 15px;
 }
-
 .doctor-form input,
 .doctor-form select {
   border-radius: 10px;
   border: 1px solid #ced4da;
   padding: 10px 12px;
   transition: all 0.2s ease;
+  width: 100%;
 }
-
 .doctor-form input:focus,
 .doctor-form select:focus {
   border-color: #0049b7;
   box-shadow: 0 0 6px rgba(0, 73, 183, 0.25);
   outline: none;
 }
-
 /* Buttons in form */
 .doctor-form .btn-primary {
   border-radius: 10px;
@@ -203,29 +244,27 @@
   box-shadow: 0 3px 10px rgba(0, 73, 183, 0.15);
   transition: all 0.2s ease;
 }
-
 .doctor-form .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 73, 183, 0.2);
 }
 
+/* Doctor list table */
 .doctor-list table {
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 73, 183, 0.08);
+  width: 100%;
 }
-
 .doctor-list table thead {
   background: linear-gradient(90deg, #0049b7, #06c0b8);
   color: #fff;
 }
-
 .doctor-list table tbody tr:hover {
   background-color: rgba(0, 73, 183, 0.05);
   transition: background-color 0.2s;
 }
-
 .doctor-list .btn-outline-warning,
 .doctor-list .btn-outline-danger {
   border-radius: 8px;
@@ -233,19 +272,18 @@
   font-size: 14px;
   transition: all 0.2s ease;
 }
-
 .doctor-list .btn-outline-warning:hover {
   background-color: #ffc107;
   border-color: #ffc107;
   color: #fff;
 }
-
 .doctor-list .btn-outline-danger:hover {
   background-color: #dc3545;
   border-color: #dc3545;
   color: #fff;
 }
 
+/* Pagination Controls */
 .pagination-controls button {
   border-radius: 8px;
   min-width: 36px;
@@ -253,25 +291,73 @@
   font-weight: 500;
   transition: all 0.2s ease;
 }
-
 .pagination-controls button:hover {
   transform: translateY(-2px);
 }
 
+/* Alerts */
 .alert {
   border-radius: 10px;
   font-weight: 500;
   box-shadow: 0 4px 12px rgba(0, 73, 183, 0.08);
 }
 
+/* Outline Info Button */
 .btn-outline-info {
   border-radius: 10px;
   font-weight: 600;
   padding: 6px 12px;
   transition: all 0.2s ease;
 }
-
 .btn-outline-info:hover {
   background: #06c0b8;
   color: #fff;
+}
+
+/* Responsive cards full width on small devices */
+@media (max-width: 575.98px) {
+  .dashboard-cards .col-sm-6 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  /* Smaller badges */
+  .table td .badge {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Table responsiveness */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Button size adjustment for very small screens */
+@media (max-width: 400px) {
+  .btn-primary {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Break long text in tables */
+table td {
+  word-break: break-word;
+}
+
+/* Header gap fix on small screens */
+@media (max-width: 575.98px) {
+  .admin-header {
+    justify-content: center;
+    gap: 1rem;
+  }
+  .admin-header h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Ensure no horizontal scroll on body */
+body, html {
+  overflow-x: hidden;
 }
